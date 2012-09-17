@@ -17,7 +17,7 @@ public class BranchServer extends Server {
 		if (input instanceof QueryMessage) {
 			QueryMessage inputCast = (QueryMessage) input;
 			String combined_id = inputCast.getAccount()
-					+ "#" + inputCast.getMessageId();
+					+ "#" + inputCast.getSerial();
 			usedMessageIds.add(combined_id);
 			Integer bal = accountAmounts.get(inputCast.getAccount());
 			return new ResponseMessage(inputCast.getDestination(), 
@@ -26,7 +26,7 @@ public class BranchServer extends Server {
 		} else if (input instanceof DepositMessage) {
 			DepositMessage inputCast = (DepositMessage) input;
 			String combined_id = inputCast.getAccount()
-					+ "#" + inputCast.getMessageId();
+					+ "#" + inputCast.getSerial();
 			if (usedMessageIds.contains(combined_id)) {
 				return new ResponseMessage(inputCast.getDestination(),
 						inputCast.getSource(), null,
@@ -47,7 +47,7 @@ public class BranchServer extends Server {
 		} else if (input instanceof WithdrawMessage) {
 			DepositMessage inputCast = (DepositMessage) input;
 			String combined_id = inputCast.getAccount()
-					+ "#" + inputCast.getMessageId();
+					+ "#" + inputCast.getSerial();
 			if (usedMessageIds.contains(combined_id)) {
 				return new ResponseMessage(inputCast.getDestination(),
 						inputCast.getSource(), null,
