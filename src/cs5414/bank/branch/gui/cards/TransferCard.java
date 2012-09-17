@@ -85,7 +85,7 @@ public class TransferCard extends JPanel implements ActionListener {
 			String toAcct = acctToField.getText();
 			int amt = Integer.parseInt(amtField.getText());
 			String serial = serialField.getText();
-			TransferMessage message = new TransferMessage(null, null, serial, fromAcct, toAcct, amt);
+			TransferMessage message = new TransferMessage(null, null, null, serial, fromAcct, toAcct, amt);
 			Client testClient = new Client("branchgui_client");
 			try {
 				Message msg = testClient.sendMessage("localhost", 10100, message);
