@@ -38,9 +38,12 @@ java -cp bin/ cs5414.bank.network.BranchServer aa_server example_names example_t
 -or-
 java -cp bank_1.jar cs5414.bank.network.BranchServer aa_server example_names example_topology
 
-main class for the GUI is: 
-and it takes args: 
+main class for the GUI is:  cs5414.bank.branch.gui.BranchGUI
+and it takes args: gui_name branch_name names_file topology_file
 example: 
+java -cp bin/ cs5414.bank.branch.gui.branchGUI aa_gui aa_server examples_names example_topology
+-or-
+java -cp bank_1.jar cs5414.bank.gui.branchGUI aa_gui aa_server examples_names example_topology
 
 Run-through instructions:
 
