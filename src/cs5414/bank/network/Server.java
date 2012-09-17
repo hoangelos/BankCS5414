@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.net.ServerSocket;
 
 import cs5414.bank.message.DebugMessage;
+import cs5414.bank.message.ResultMessage;
 import cs5414.bank.message.Message;
 
 public class Server {
@@ -65,7 +66,7 @@ public class Server {
 	
 	protected Message processMessage(Message input) {
 		System.err.println("Processing: " + input);
-		return new DebugMessage(null, null, null, "Pong!");
+		return new ResultMessage(null, null, input.getMessageId(), input, 10);
 	}
 	
 	public void start() {

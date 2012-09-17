@@ -22,4 +22,12 @@ public class WithdrawMessage extends Message {
 		return amount;
 	}
 	
+	public String toString() {
+		return "[WithdrawMessage " + source
+				+ " " + destination
+				+ " " + id + " "
+				+ account + " " + amount
+				+ "]"; 
+	}
+	
 }
