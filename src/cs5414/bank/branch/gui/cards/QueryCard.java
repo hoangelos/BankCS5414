@@ -62,7 +62,7 @@ public class QueryCard extends JPanel implements ActionListener {
 		if (Constants.DO_QUERY == e.getActionCommand()) {
 			String acct = acctField.getText();
 			String serial = serialField.getText();
-			QueryMessage message = new QueryMessage(null, null, serial, acct);
+			QueryMessage message = new QueryMessage(null, null, null, serial, acct);
 			Client testClient = new Client("branchgui_client");
 			try {
 				Message msg = testClient.sendMessage("localhost", 10100, message);

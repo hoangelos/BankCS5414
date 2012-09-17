@@ -73,7 +73,7 @@ public class DepositCard extends JPanel implements ActionListener {
 			String acct = acctField.getText();
 			int amt = Integer.parseInt(amtField.getText());
 			String serial = serialField.getText();
-			DepositMessage message = new DepositMessage(null, null, serial, acct, amt);
+			DepositMessage message = new DepositMessage(null, null, null, serial, acct, amt);
 			Client testClient = new Client("branchgui_client");
 			try {
 				Message msg = testClient.sendMessage("localhost", 10100, message);

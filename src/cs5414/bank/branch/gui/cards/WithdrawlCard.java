@@ -31,18 +31,6 @@ public class WithdrawlCard extends JPanel implements ActionListener  {
 		//WithDrawl Card Details
 
 		createPanel(this, null, -1, null, -1);
-		
-		JButton btnWithdraw = new JButton("Withdraw");
-		btnWithdraw.setActionCommand(Constants.DO_WITHDRAWL);
-		btnWithdraw.addActionListener(this);
-		btnWithdraw.setBounds(71, 176, 117, 29);
-		this.add(btnWithdraw);
-		
-		JButton btnWithdrawlCancel = new JButton("Cancel");
-		btnWithdrawlCancel.setActionCommand(Constants.MENU_PANEL);
-		btnWithdrawlCancel.addActionListener(maingui);
-		btnWithdrawlCancel.setBounds(186, 176, 117, 29);
-		this.add(btnWithdrawlCancel);
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -50,7 +38,7 @@ public class WithdrawlCard extends JPanel implements ActionListener  {
 			String acct = acctField.getText();
 			int amt = Integer.parseInt(amtField.getText());
 			String serial = serialField.getText();
-			WithdrawMessage message = new WithdrawMessage(null, null, serial, acct, amt);
+			WithdrawMessage message = new WithdrawMessage(null, null, null, serial, acct, amt);
 			Client testClient = new Client("branchgui_client");
 			try {
 				ResultMessage msg = (ResultMessage) (testClient.sendMessage("localhost", 10100, message));
@@ -60,10 +48,13 @@ public class WithdrawlCard extends JPanel implements ActionListener  {
 				acctField.setText(null);
 				JPanel withdrawPanel = new JPanel(new GridLayout(4,2));
 				int balance = msg.getResult();
-				createPanel(withdrawPanel, acct, amt, serial, balance);
+				WithdrawMessage origMsg = (WithdrawMessage) (msg.getMsg());
+				createPanel(withdrawPanel, origMsg.getAccount(), origMsg.getAmount(), origMsg.getSerial(), balance);
 				BranchGUI.resultsCard.display(withdrawPanel, balance);
 				CardLayout cl = (CardLayout) (BranchGUI.panel.getLayout());
 				cl.show(BranchGUI.panel, Constants.RESULTS_PANEL);
+				removeAll();
+				createPanel(this, null, -1, null, -1);
 			} catch (IOException err) {
 				System.err.println("Error in sending Withdrawl Message. IO Exception");
 			} catch (ClassNotFoundException err) {
@@ -71,7 +62,6 @@ public class WithdrawlCard extends JPanel implements ActionListener  {
 			}
 		} else if(Constants.MENU_PANEL == e.getActionCommand()) {
 			createPanel(this, null, -1, null, -1);
-			removeAll();
 			home.actionPerformed(e);
 		}
 	}
@@ -120,6 +110,18 @@ public class WithdrawlCard extends JPanel implements ActionListener  {
 			acctField.setEnabled(false);
 			amtField.setEnabled(false);
 			serialField.setEnabled(false);
+		} else {
+			JButton btnWithdraw = new JButton("Withdraw");
+			btnWithdraw.setActionCommand(Constants.DO_WITHDRAWL);
+			btnWithdraw.addActionListener(this);
+			btnWithdraw.setBounds(71, 176, 117, 29);
+			panelToAdd.add(btnWithdraw);
+			
+			JButton btnWithdrawlCancel = new JButton("Cancel");
+			btnWithdrawlCancel.setActionCommand(Constants.MENU_PANEL);
+			btnWithdrawlCancel.addActionListener(home);
+			btnWithdrawlCancel.setBounds(186, 176, 117, 29);
+			panelToAdd.add(btnWithdrawlCancel);
 		}
 	}
 }
