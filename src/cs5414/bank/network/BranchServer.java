@@ -21,17 +21,17 @@ public class BranchServer extends Server {
 			usedMessageIds.add(combined_id);
 			Integer bal = accountAmounts.get(inputCast.getAccount());
 			if (bal == null) bal = 0;
-			return new ResponseMessage(inputCast.getDestination(), 
-					inputCast.getSource(), null,
-					inputCast.getMessageId(), bal);
+			return new ResultMessage(inputCast.getDestination(),
+					inputCast.getSource(), null, input, bal);
 		} else if (input instanceof DepositMessage) {
 			DepositMessage inputCast = (DepositMessage) input;
 			String combined_id = inputCast.getAccount()
 					+ "#" + inputCast.getSerial();
 			if (usedMessageIds.contains(combined_id)) {
-				return new ResponseMessage(inputCast.getDestination(),
-						inputCast.getSource(), null,
-						inputCast.getMessageId(), null);
+				Integer bal = accountAmounts.get(inputCast.getAccount());
+				if (bal == null) bal = 0;
+				return new ResultMessage(inputCast.getDestination(),
+						inputCast.getSource(), null, input, bal);
 			} else {
 				usedMessageIds.add(combined_id);
 				String acc = inputCast.getAccount();
@@ -40,19 +40,20 @@ public class BranchServer extends Server {
 				}
 				accountAmounts.put(acc,
 						accountAmounts.get(acc) + inputCast.getAmount());
-				return new ResponseMessage(inputCast.getDestination(),
-						inputCast.getSource(), null,
-						inputCast.getMessageId(),
-						accountAmounts.get(acc));
+				Integer bal = accountAmounts.get(inputCast.getAccount());
+				if (bal == null) bal = 0;
+				return new ResultMessage(inputCast.getDestination(),
+						inputCast.getSource(), null, input, bal);
 			}
 		} else if (input instanceof WithdrawMessage) {
 			DepositMessage inputCast = (DepositMessage) input;
 			String combined_id = inputCast.getAccount()
 					+ "#" + inputCast.getSerial();
 			if (usedMessageIds.contains(combined_id)) {
-				return new ResponseMessage(inputCast.getDestination(),
-						inputCast.getSource(), null,
-						inputCast.getMessageId(), null);
+				Integer bal = accountAmounts.get(inputCast.getAccount());
+				if (bal == null) bal = 0;
+				return new ResultMessage(inputCast.getDestination(),
+						inputCast.getSource(), null, input, bal);
 			} else {
 				usedMessageIds.add(combined_id);
 				String acc = inputCast.getAccount();
@@ -61,10 +62,10 @@ public class BranchServer extends Server {
 				}
 				accountAmounts.put(acc,
 						accountAmounts.get(acc) - inputCast.getAmount());
-				return new ResponseMessage(inputCast.getDestination(),
-						inputCast.getSource(), null,
-						inputCast.getMessageId(),
-						accountAmounts.get(acc));
+				Integer bal = accountAmounts.get(inputCast.getAccount());
+				if (bal == null) bal = 0;
+				return new ResultMessage(inputCast.getDestination(),
+						inputCast.getSource(), null, input, bal);
 			}
 		} else if (input instanceof TransferMessage) {
 			throw new RuntimeException();
