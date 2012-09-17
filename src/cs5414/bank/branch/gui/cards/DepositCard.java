@@ -14,10 +14,8 @@ import javax.swing.SwingConstants;
 
 import cs5414.bank.branch.gui.BranchGUI;
 import cs5414.bank.branch.gui.Constants;
-import cs5414.bank.message.Message;
 import cs5414.bank.message.DepositMessage;
 import cs5414.bank.message.ResultMessage;
-import cs5414.bank.message.WithdrawMessage;
 import cs5414.bank.network.Client;
 
 public class DepositCard extends JPanel implements ActionListener {

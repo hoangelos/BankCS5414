@@ -46,7 +46,7 @@ public class BranchServer extends Server {
 						inputCast.getSource(), null, input, bal);
 			}
 		} else if (input instanceof WithdrawMessage) {
-			DepositMessage inputCast = (DepositMessage) input;
+			WithdrawMessage inputCast = (WithdrawMessage) input;
 			String combined_id = inputCast.getAccount()
 					+ "#" + inputCast.getSerial();
 			if (usedMessageIds.contains(combined_id)) {
