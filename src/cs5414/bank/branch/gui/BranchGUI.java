@@ -12,15 +12,20 @@ public class BranchGUI implements ActionListener {
 	static public JPanel panel;
 	static public ResultsCard resultsCard;
 	static private MenuCard menuCard;
+	static public String name;
+	static public String branch_name;
     
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		final String myName = args[0];
+		final String branchName = args[1];
+		System.err.println("BranchGUI " + myName + " started");
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					BranchGUI window = new BranchGUI();
+					BranchGUI window = new BranchGUI(myName, branchName);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -32,7 +37,9 @@ public class BranchGUI implements ActionListener {
 	/**
 	 * Create the application.
 	 */
-	public BranchGUI() {
+	public BranchGUI(String my_name, String my_branch_name) {
+		name = my_name;
+		branch_name = my_branch_name;
 		initialize();
 	}
 
