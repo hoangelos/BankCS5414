@@ -41,6 +41,7 @@ public class Server {
 	protected class ServerThread extends Thread {
 		public void run() {
 			try {
+				@SuppressWarnings("resource") //until we add in graceful exit
 				ServerSocket servSock = new ServerSocket(port);
 				Socket sock;
 				System.err.println("Server thread started.");
