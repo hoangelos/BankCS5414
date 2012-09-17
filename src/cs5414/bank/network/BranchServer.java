@@ -20,6 +20,7 @@ public class BranchServer extends Server {
 					+ "#" + inputCast.getSerial();
 			usedMessageIds.add(combined_id);
 			Integer bal = accountAmounts.get(inputCast.getAccount());
+			if (bal == null) bal = 0;
 			return new ResponseMessage(inputCast.getDestination(), 
 					inputCast.getSource(), null,
 					inputCast.getMessageId(), bal);
@@ -78,5 +79,17 @@ public class BranchServer extends Server {
 		usedMessageIds = new TreeSet<String>();
 		accountAmounts = new TreeMap<String, Integer>();
 	}
-
+	
+	public static void main(String args[]) {
+		String myName = args[0];
+		String nameFile = args[1];
+		String topoFile = args[2];
+		Names names = new Names(nameFile);
+		Topology topo = new Topology(topoFile);
+		int port = names.resolve_port(myName);
+		System.err.println("Branch server " + myName + " starting on port " + port);
+		BranchServer thisServer = new BranchServer(myName, port);
+		thisServer.start();
+	}
+	
 }
