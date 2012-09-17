@@ -39,13 +39,13 @@ public class QueryCard extends JPanel implements ActionListener {
 			QueryMessage message = new QueryMessage(null, null, null, serial, acct);
 			Client testClient = new Client("branchgui_client");
 			try {
-				ResultMessage msg = (ResultMessage) (testClient.sendMessage("localhost", 10700, message));
+				ResultMessage msg = (ResultMessage) (testClient.sendMessage("localhost", 10500, message));
 				System.err.println("Query Results Coming in");
 				serialField.setText(null);
 				acctField.setText(null);
 				JPanel queryPanel = new JPanel(new GridLayout(4,2));
 				int balance = msg.getResult();
-				DepositMessage origMsg = (DepositMessage) (msg.getMsg());
+				QueryMessage origMsg = (QueryMessage) (msg.getMsg());
 				createPanel(queryPanel, origMsg.getAccount(), origMsg.getSerial(), balance);
 				BranchGUI.resultsCard.display(queryPanel, balance);
 				CardLayout cl = (CardLayout) (BranchGUI.panel.getLayout());

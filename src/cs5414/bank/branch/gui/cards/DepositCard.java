@@ -41,7 +41,7 @@ public class DepositCard extends JPanel implements ActionListener {
 			DepositMessage message = new DepositMessage(null, null, null, serial, acct, amt);
 			Client testClient = new Client("branchgui_client");
 			try {
-				ResultMessage msg = (ResultMessage) (testClient.sendMessage("localhost", 10700, message));
+				ResultMessage msg = (ResultMessage) (testClient.sendMessage("localhost", 10500, message));
 				System.err.println("Deposit Results Coming in");
 				amtField.setText(null);
 				serialField.setText(null);
