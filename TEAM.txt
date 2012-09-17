@@ -1,3 +1,29 @@
 Peter J. Halliday pjh239
 Minglian Pan mp492
 
+Peter did:
+
+interface design
+GUI
+client logic
+client-related messaging
+integration of client and server
+functional testing
+debugging
+docs
+miscellaneous
+
+total ~?? hours
+
+Ming did:
+
+server process
+server loop/networking
+topology and name-resolution
+server logic
+message structure
+debugging
+docs
+miscellaneous
+
+total ~15 hours

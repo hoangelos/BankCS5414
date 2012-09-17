@@ -33,13 +33,14 @@ run java on the corresponding class file
 
 main class for the branch server is: cs5414.bank.network.BranchServer
 and it takes args: server_name names_file topology_file
-example: java -cp bin/ cs5414.bank.network.BranchServer aa_server example_names example_topology
+example:
+java -cp bin/ cs5414.bank.network.BranchServer aa_server example_names example_topology
+-or-
+java -cp bank_1.jar cs5414.bank.network.BranchServer aa_server example_names example_topology
 
 main class for the GUI is: 
 and it takes args: 
 example: 
-
-Running examples:
 
 Run-through instructions:
 
