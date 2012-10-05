@@ -32,7 +32,7 @@ public class ResultsCard extends JPanel {
 			this.add(resultLbl, BorderLayout.WEST);
 			
 			//Add the actual results
-			JTextField resultTxtField = new JTextField(balance);
+			JTextField resultTxtField = new JTextField();
 			resultTxtField.setText(Integer.toString(balance));
 			resultTxtField.setEnabled(false);
 			this.add(resultTxtField, BorderLayout.EAST);

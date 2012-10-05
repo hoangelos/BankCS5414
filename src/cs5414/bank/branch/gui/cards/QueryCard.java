@@ -22,7 +22,6 @@ import cs5414.bank.network.Client;
 
 public class QueryCard extends JPanel implements ActionListener {
 	private JTextField acctField;
-	private JTextField serialField;
 	private BranchGUI home;
 	
 	public QueryCard(BranchGUI maingui) {
@@ -35,7 +34,7 @@ public class QueryCard extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (Constants.DO_QUERY == e.getActionCommand()) {
 			String acct = acctField.getText();
-			String serial = serialField.getText();
+			String serial = home.getUID();
 			QueryMessage message = new QueryMessage(null, null, null, serial, acct);
 			Client testClient = new Client("branchgui_client");
 			try {
@@ -43,7 +42,6 @@ public class QueryCard extends JPanel implements ActionListener {
 				int port = BranchGUI.names.resolve_port(BranchGUI.branch_name);
 				ResultMessage msg = (ResultMessage) (testClient.sendMessage(host, port, message));
 				System.err.println("Query Results Coming in");
-				serialField.setText(null);
 				acctField.setText(null);
 				JPanel queryPanel = new JPanel(new GridLayout(4,2));
 				int balance = msg.getResult();
@@ -75,22 +73,8 @@ public class QueryCard extends JPanel implements ActionListener {
 			acctField.setText(acct);
 		}
 		
-		JLabel lblQuerySerial = new JLabel("Serial #");
-		lblQuerySerial.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblQuerySerial.setBounds(16, 138, 75, 16);
-		panelToAdd.add(lblQuerySerial);
-		
-		serialField = new JTextField();
-		serialField.setColumns(10);
-		serialField.setBounds(93, 129, 141, 35);
-		panelToAdd.add(serialField);
-		if(serial != null) {
-			serialField.setText(serial);
-		}
-		
 		if(balance >= 0) {
 			acctField.setEnabled(false);
-			serialField.setEnabled(false);
 		} else {
 			JButton btnDoQuery = new JButton("Get Balance");
 			btnDoQuery.setActionCommand(Constants.DO_QUERY);

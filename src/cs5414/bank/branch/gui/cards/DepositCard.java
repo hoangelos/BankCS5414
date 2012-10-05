@@ -21,7 +21,6 @@ import cs5414.bank.network.Client;
 public class DepositCard extends JPanel implements ActionListener {
 	private JTextField acctField;
 	private JTextField amtField;
-	private JTextField serialField;
 	private BranchGUI home;
 	
 	public DepositCard(BranchGUI maingui) {
@@ -35,7 +34,7 @@ public class DepositCard extends JPanel implements ActionListener {
 		if (Constants.DO_DEPOSIT == e.getActionCommand()) {
 			String acct = acctField.getText();
 			int amt = Integer.parseInt(amtField.getText());
-			String serial = serialField.getText();
+			String serial = home.getUID();
 			DepositMessage message = new DepositMessage(null, null, null, serial, acct, amt);
 			Client testClient = new Client("branchgui_client");
 			try {
@@ -44,7 +43,6 @@ public class DepositCard extends JPanel implements ActionListener {
 				ResultMessage msg = (ResultMessage) (testClient.sendMessage(host, port, message));
 				System.err.println("Deposit Results Coming in");
 				amtField.setText(null);
-				serialField.setText(null);
 				acctField.setText(null);
 				JPanel depositPanel = new JPanel(new GridLayout(4,2));
 				int balance = msg.getResult();
@@ -90,23 +88,9 @@ public class DepositCard extends JPanel implements ActionListener {
 			amtField.setText(Integer.toString(amt));
 		}
 		
-		JLabel lblCancelSerial = new JLabel("Serial #");
-		lblCancelSerial.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCancelSerial.setBounds(16, 138, 75, 16);
-		panelToAdd.add(lblCancelSerial);
-		
-		serialField = new JTextField();
-		serialField.setColumns(10);
-		serialField.setBounds(93, 129, 141, 35);
-		panelToAdd.add(serialField);
-		if(serial != null) {
-			serialField.setText(serial);
-		}
-		
 		if(balance >= 0) {
 			acctField.setEnabled(false);
 			amtField.setEnabled(false);
-			serialField.setEnabled(false);
 		} else {
 			JButton btnDoDeposit = new JButton("Deposit");
 			btnDoDeposit.setActionCommand(Constants.DO_DEPOSIT);
