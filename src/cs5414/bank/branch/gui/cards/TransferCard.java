@@ -88,7 +88,9 @@ public class TransferCard extends JPanel implements ActionListener {
 			TransferMessage message = new TransferMessage(null, null, null, serial, fromAcct, toAcct, amt);
 			Client testClient = new Client("branchgui_client");
 			try {
-				Message msg = testClient.sendMessage("localhost", 10100, message);
+				String host = BranchGUI.names.resolve_host(BranchGUI.branch_name);
+				int port = BranchGUI.names.resolve_port(BranchGUI.branch_name);
+				Message msg = testClient.sendMessage(host, port, message);
 				System.err.println("Send works");
 			} catch (IOException err) {
 				System.err.println("Error in sending Query Message. IO Exception");

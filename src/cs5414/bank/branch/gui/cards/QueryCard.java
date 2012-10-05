@@ -39,7 +39,9 @@ public class QueryCard extends JPanel implements ActionListener {
 			QueryMessage message = new QueryMessage(null, null, null, serial, acct);
 			Client testClient = new Client("branchgui_client");
 			try {
-				ResultMessage msg = (ResultMessage) (testClient.sendMessage("localhost", 10500, message));
+				String host = BranchGUI.names.resolve_host(BranchGUI.branch_name);
+				int port = BranchGUI.names.resolve_port(BranchGUI.branch_name);
+				ResultMessage msg = (ResultMessage) (testClient.sendMessage(host, port, message));
 				System.err.println("Query Results Coming in");
 				serialField.setText(null);
 				acctField.setText(null);

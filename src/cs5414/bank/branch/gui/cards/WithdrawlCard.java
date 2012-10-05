@@ -41,7 +41,9 @@ public class WithdrawlCard extends JPanel implements ActionListener  {
 			WithdrawMessage message = new WithdrawMessage(BranchGUI.name, BranchGUI.branch_name, null, serial, acct, amt);
 			Client testClient = new Client("branchgui_client");
 			try {
-				ResultMessage msg = (ResultMessage) (testClient.sendMessage("localhost", 10500, message));
+				String host = BranchGUI.names.resolve_host(BranchGUI.branch_name);
+				int port = BranchGUI.names.resolve_port(BranchGUI.branch_name);
+				ResultMessage msg = (ResultMessage) (testClient.sendMessage(host, port, message));
 				System.err.println("Withdrawl Results Coming in");
 				amtField.setText(null);
 				serialField.setText(null);

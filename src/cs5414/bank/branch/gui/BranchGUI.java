@@ -6,6 +6,8 @@ import javax.swing.*;
 
 import cs5414.bank.branch.gui.Constants;
 import cs5414.bank.branch.gui.cards.*;
+import cs5414.bank.network.Names;
+import cs5414.bank.network.Topology;
 
 public class BranchGUI implements ActionListener {
 	private JFrame frame;
@@ -14,18 +16,24 @@ public class BranchGUI implements ActionListener {
 	static private MenuCard menuCard;
 	static public String name;
 	static public String branch_name;
+	static public Topology topo;
+	static public Names names;
     
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		final String myName = args[0];
-		final String branchName = args[1];
-		System.err.println("BranchGUI " + myName + " started");
+		name = args[0];
+		branch_name = args[1];
+		String nameFile = args[2];
+		String topoFile = args[3];
+		names = new Names(nameFile);
+		topo = new Topology(topoFile);
+		System.err.println("BranchGUI " + name + " started");
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					BranchGUI window = new BranchGUI(myName, branchName);
+					BranchGUI window = new BranchGUI(name, branch_name);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
