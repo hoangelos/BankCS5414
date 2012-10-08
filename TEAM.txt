@@ -13,7 +13,7 @@ debugging
 docs
 miscellaneous
 
-total ~?? hours
+total ~35 hours
 
 Ming did:
 

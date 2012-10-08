@@ -22,7 +22,6 @@ import cs5414.bank.network.Client;
 public class WithdrawlCard extends JPanel implements ActionListener  {
 	private JTextField acctField;
 	private JTextField amtField;
-	private JTextField serialField;
 	private BranchGUI home;
 	
 	public WithdrawlCard(BranchGUI maingui) {
@@ -37,14 +36,15 @@ public class WithdrawlCard extends JPanel implements ActionListener  {
 		if (Constants.DO_WITHDRAWL == e.getActionCommand()) {
 			String acct = acctField.getText();
 			int amt = Integer.parseInt(amtField.getText());
-			String serial = serialField.getText();
-			WithdrawMessage message = new WithdrawMessage(null, null, null, serial, acct, amt);
+			String serial = home.getUID();
+			WithdrawMessage message = new WithdrawMessage(BranchGUI.name, BranchGUI.branch_name, null, serial, acct, amt);
 			Client testClient = new Client("branchgui_client");
 			try {
-				ResultMessage msg = (ResultMessage) (testClient.sendMessage("localhost", 10100, message));
+				String host = BranchGUI.names.resolve_host(BranchGUI.branch_name);
+				int port = BranchGUI.names.resolve_port(BranchGUI.branch_name);
+				ResultMessage msg = (ResultMessage) (testClient.sendMessage(host, port, message));
 				System.err.println("Withdrawl Results Coming in");
 				amtField.setText(null);
-				serialField.setText(null);
 				acctField.setText(null);
 				JPanel withdrawPanel = new JPanel(new GridLayout(4,2));
 				int balance = msg.getResult();
@@ -93,23 +93,9 @@ public class WithdrawlCard extends JPanel implements ActionListener  {
 			amtField.setText(Integer.toString(amt));
 		}
 		
-		JLabel lblSerial = new JLabel("Serial #");
-		lblSerial.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblSerial.setBounds(16, 138, 75, 16);
-		panelToAdd.add(lblSerial);
-		
-		serialField = new JTextField();
-		serialField.setColumns(10);
-		serialField.setBounds(93, 129, 141, 35);
-		panelToAdd.add(serialField);
-		if(serial != null) {
-			serialField.setText(serial);
-		}
-		
 		if(balance >= 0) {
 			acctField.setEnabled(false);
 			amtField.setEnabled(false);
-			serialField.setEnabled(false);
 		} else {
 			JButton btnWithdraw = new JButton("Withdraw");
 			btnWithdraw.setActionCommand(Constants.DO_WITHDRAWL);

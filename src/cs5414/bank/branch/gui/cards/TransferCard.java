@@ -21,11 +21,12 @@ public class TransferCard extends JPanel implements ActionListener {
 	private JTextField acctFromField;
 	private JTextField acctToField;
 	private JTextField amtField;
-	private JTextField serialField;
+	private BranchGUI home;
 	
 	public TransferCard(BranchGUI maingui) {
 		//Transfer Card Details
 		super(new GridLayout(5,2));
+		home = maingui;
 		JLabel lblXferFromAcct = new JLabel("From Account #");
 		lblXferFromAcct.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblXferFromAcct.setBounds(16, 23, 75, 16);
@@ -56,16 +57,6 @@ public class TransferCard extends JPanel implements ActionListener {
 		amtField.setBounds(93, 72, 141, 35);
 		this.add(amtField);
 		
-		JLabel lblXferSerial = new JLabel("Serial #");
-		lblXferSerial.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblXferSerial.setBounds(16, 138, 75, 16);
-		this.add(lblXferSerial);
-		
-		serialField = new JTextField();
-		serialField.setColumns(10);
-		serialField.setBounds(93, 129, 141, 35);
-		this.add(serialField);
-		
 		JButton btnDoXfer = new JButton("Transfer");
 		btnDoXfer.setActionCommand(Constants.DO_TRANSFER);
 		btnDoXfer.addActionListener(this);
@@ -84,11 +75,13 @@ public class TransferCard extends JPanel implements ActionListener {
 			String fromAcct = acctFromField.getText();
 			String toAcct = acctToField.getText();
 			int amt = Integer.parseInt(amtField.getText());
-			String serial = serialField.getText();
+			String serial = home.getUID();
 			TransferMessage message = new TransferMessage(null, null, null, serial, fromAcct, toAcct, amt);
 			Client testClient = new Client("branchgui_client");
 			try {
-				Message msg = testClient.sendMessage("localhost", 10100, message);
+				String host = BranchGUI.names.resolve_host(BranchGUI.branch_name);
+				int port = BranchGUI.names.resolve_port(BranchGUI.branch_name);
+				Message msg = testClient.sendMessage(host, port, message);
 				System.err.println("Send works");
 			} catch (IOException err) {
 				System.err.println("Error in sending Query Message. IO Exception");
