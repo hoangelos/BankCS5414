@@ -61,4 +61,23 @@ public class NetworkInfo {
 		return destSet.contains(hostTo);
 	}
 	
+	public HashSet<String> getInboundLinks(String to) {
+		HashSet<String> result = new HashSet<String>();
+		for (String from: connectedHosts.keySet()) {
+			HashSet<String> toSet = connectedHosts.get(from);
+			if (toSet != null && toSet.contains(to)) {
+				result.add(from);
+			}
+		}
+		return result;
+	}
+	
+	public HashSet<String> getOutboundLinks(String from) {
+		if (connectedHosts.containsKey(from)) {
+			return new HashSet<String>(connectedHosts.get(from));
+		} else {
+			return new HashSet<String>();
+		}
+	}
+	
 }

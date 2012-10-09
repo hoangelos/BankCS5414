@@ -28,4 +28,16 @@ public class VectorClock {
 		return currentSubClockVal;
 	}
 	
+	public int setClockForNameToAtLeast(String name, int newVal) {
+		int currentSubClockVal = 0;
+		if (subClocks.containsKey(name)) {
+			currentSubClockVal = subClocks.get(name);
+		}
+		if (currentSubClockVal < newVal) {
+			currentSubClockVal = newVal;
+		}
+		subClocks.put(name, currentSubClockVal);
+		return currentSubClockVal;
+	}
+	
 }

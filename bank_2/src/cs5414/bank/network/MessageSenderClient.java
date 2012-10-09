@@ -24,6 +24,8 @@ public class MessageSenderClient {
 				ObjectOutputStream oos = new ObjectOutputStream(sock.getOutputStream());
 				oos.writeObject(message);
 				sock.close();
+			} else {
+				System.err.println("Tried to send directly to unreachable destination!");
 			}
 		} catch (Exception e) {
 			e.printStackTrace(System.err);

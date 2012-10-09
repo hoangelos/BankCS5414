@@ -72,8 +72,10 @@ public class BaseServer {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(sock.getInputStream());
 				Object obj = ois.readObject();
+				/*
 				System.err.println("Received message:");
 				System.err.println(obj);
+				*/
 				if (obj instanceof BaseMessage) {
 					BaseMessage messageCast = (BaseMessage) obj;
 					enqueueMessage(messageCast);
@@ -102,8 +104,10 @@ public class BaseServer {
 					}
 				}
 				if (message != null) {
+					/*
 					System.err.println("Processing message:");
 					System.err.println(message);
+					*/
 					processMessage(message);
 				}
 				synchronized (lock) {
