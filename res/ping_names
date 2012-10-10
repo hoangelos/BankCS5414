@@ -1,0 +1,2 @@
+ping_sender	localhost	10000
+ping_replier	localhost	10001

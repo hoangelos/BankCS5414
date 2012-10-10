@@ -1,6 +1,0 @@
-aa_server	aa_gui
-aa_gui	aa_server
-bb_server	bb_gui
-bb_gui bb_server
-aa_server	bb_server
-bb_server	aa_server
