@@ -1,96 +1,137 @@
 package cs5414.bank.network;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.HashMap;
 
-import cs5414.bank.message.*;
+import cs5414.bank.message.BankReplyMessage;
+import cs5414.bank.message.BankRequestMessage;
+import cs5414.bank.message.BankRequestMessage.RequestType;
+import cs5414.bank.message.BaseMessage;
+import cs5414.bank.misc.VectorClock;
 
-public class BranchServer extends Server {
+public class BranchServer extends BaseServer {
 	
-	private Set<String> usedMessageIds;
-	private Map<String, Integer> accountAmounts;
+	private MessageSenderClient senderClient;
+	private String branchPrefix;
+	private HashMap<String, Integer> balances;
+	private VectorClock maxUsedSerials;
 	
-	protected synchronized Message processMessage(Message input) {
-		System.err.println("Received message " + input);
-		if (input instanceof QueryMessage) {
-			QueryMessage inputCast = (QueryMessage) input;
-			String combined_id = inputCast.getAccount()
-					+ "#" + inputCast.getSerial();
-			usedMessageIds.add(combined_id);
-			Integer bal = accountAmounts.get(inputCast.getAccount());
-			if (bal == null) bal = 0;
-			return new ResultMessage(inputCast.getDestination(),
-					inputCast.getSource(), null, input, bal);
-		} else if (input instanceof DepositMessage) {
-			DepositMessage inputCast = (DepositMessage) input;
-			String combined_id = inputCast.getAccount()
-					+ "#" + inputCast.getSerial();
-			if (usedMessageIds.contains(combined_id)) {
-				Integer bal = accountAmounts.get(inputCast.getAccount());
-				if (bal == null) bal = 0;
-				return new ResultMessage(inputCast.getDestination(),
-						inputCast.getSource(), null, input, bal);
-			} else {
-				usedMessageIds.add(combined_id);
-				String acc = inputCast.getAccount();
-				if (!accountAmounts.containsKey(acc)) {
-					accountAmounts.put(acc, 0);
-				}
-				accountAmounts.put(acc,
-						accountAmounts.get(acc) + inputCast.getAmount());
-				Integer bal = accountAmounts.get(inputCast.getAccount());
-				if (bal == null) bal = 0;
-				return new ResultMessage(inputCast.getDestination(),
-						inputCast.getSource(), null, input, bal);
+	public BranchServer(String name, NetworkInfo net) {
+		super(name, net);
+		senderClient = new MessageSenderClient(name, net);
+		branchPrefix = name.substring(0, 2);
+		balances = new HashMap<String, Integer>();
+		maxUsedSerials = new VectorClock();
+	}
+	
+	protected void processMessage(BaseMessage message) {
+		String accountPrefix, accountSuffix;
+		int prevBalance, newBalance;
+		if (message instanceof BankRequestMessage) {
+			System.err.println("Processing bank request:");
+			System.err.println(message);
+			BankRequestMessage requestMessage =
+					(BankRequestMessage) message;
+			accountPrefix = requestMessage.account.substring(0, 2);
+			if (!accountPrefix.equals(branchPrefix)) {
+				System.err.println("Mismatched account prefix!");
+				return;
 			}
-		} else if (input instanceof WithdrawMessage) {
-			WithdrawMessage inputCast = (WithdrawMessage) input;
-			String combined_id = inputCast.getAccount()
-					+ "#" + inputCast.getSerial();
-			if (usedMessageIds.contains(combined_id)) {
-				Integer bal = accountAmounts.get(inputCast.getAccount());
-				if (bal == null) bal = 0;
-				return new ResultMessage(inputCast.getDestination(),
-						inputCast.getSource(), null, input, bal);
-			} else {
-				usedMessageIds.add(combined_id);
-				String acc = inputCast.getAccount();
-				if (!accountAmounts.containsKey(acc)) {
-					accountAmounts.put(acc, 0);
-				}
-				accountAmounts.put(acc,
-						accountAmounts.get(acc) - inputCast.getAmount());
-				Integer bal = accountAmounts.get(inputCast.getAccount());
-				if (bal == null) bal = 0;
-				return new ResultMessage(inputCast.getDestination(),
-						inputCast.getSource(), null, input, bal);
+			accountSuffix = requestMessage.account.substring(3);
+			boolean requestSendReply = false;
+			if (maxUsedSerials.getClockForName(accountSuffix)
+					< requestMessage.serial) {
+				maxUsedSerials.setClockForNameToAtLeast(
+						accountSuffix, requestMessage.serial);
+				switch (requestMessage.requestType) {
+				case QUERY:
+					requestSendReply = true;
+					break;
+				case DEPOSIT:
+					prevBalance = 0;
+					if (balances.containsKey(accountSuffix)) {
+						prevBalance = balances.get(accountSuffix);
+					}
+					prevBalance += requestMessage.amount;
+					balances.put(accountSuffix, prevBalance);
+					requestSendReply = true;
+					break;
+				case WITHDRAW:
+					prevBalance = 0;
+					if (balances.containsKey(accountSuffix)) {
+						prevBalance = balances.get(accountSuffix);
+					}
+					prevBalance -= requestMessage.amount;
+					balances.put(accountSuffix, prevBalance);
+					requestSendReply = true;
+					break;
+				case TRANSFER:
+					String intoAccountPrefix = requestMessage.accountInto.substring(0, 2);
+					BankRequestMessage pairedDeposit;
+					if (intoAccountPrefix.equals(branchPrefix)) {
+						prevBalance = 0;
+						if (balances.containsKey(accountSuffix)) {
+							prevBalance = balances.get(accountSuffix);
+						}
+						prevBalance -= requestMessage.amount;
+						balances.put(accountSuffix, prevBalance);
+						pairedDeposit = new BankRequestMessage();
+						pairedDeposit.autoNumber();
+						pairedDeposit.requestType = RequestType.DEPOSIT;
+						pairedDeposit.source = servName;
+						pairedDeposit.destination = servName;
+						pairedDeposit.serial = requestMessage.serial;
+						pairedDeposit.account = requestMessage.accountInto;
+						pairedDeposit.amount = requestMessage.amount;
+						enqueueMessage(pairedDeposit);
+						requestSendReply = true;
+					} else if (network.connectedDirectly(servName,
+							intoAccountPrefix + "_server")) {
+						prevBalance = 0;
+						if (balances.containsKey(accountSuffix)) {
+							prevBalance = balances.get(accountSuffix);
+						}
+						prevBalance -= requestMessage.amount;
+						balances.put(accountSuffix, prevBalance);
+						pairedDeposit = new BankRequestMessage();
+						pairedDeposit.autoNumber();
+						pairedDeposit.requestType = RequestType.DEPOSIT;
+						pairedDeposit.source = servName;
+						pairedDeposit.destination = intoAccountPrefix + "_server";
+						pairedDeposit.serial = requestMessage.serial;
+						pairedDeposit.account = requestMessage.accountInto;
+						pairedDeposit.amount = requestMessage.amount;
+						senderClient.sendMessage(pairedDeposit);
+						requestSendReply = true;
+					}
+					break;
+				default:
+					break;
+				}	
 			}
-		} else if (input instanceof TransferMessage) {
-			throw new RuntimeException();
-		} else if (input instanceof DebugMessage) {
-			return new DebugMessage(null, null, null, "Pong!");
+			if (requestSendReply) {
+				newBalance = 0;
+				if (balances.containsKey(accountSuffix)) {
+					newBalance = balances.get(accountSuffix);
+				}
+				BankReplyMessage replyToSend = new BankReplyMessage();
+				replyToSend.destination = requestMessage.source;
+				replyToSend.source = requestMessage.destination;
+				replyToSend.inReplyToNum = requestMessage.msgNumForReplies;
+				replyToSend.account = requestMessage.account;
+				replyToSend.balance = newBalance;
+				senderClient.sendMessage(replyToSend);
+				System.err.println("Reply sent!");
+			}
 		}
-		return null;
 	}
 	
-	public BranchServer(String name, int port) {
-		super(name, port);
-		usedMessageIds = new TreeSet<String>();
-		accountAmounts = new TreeMap<String, Integer>();
-	}
-	
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		String myName = args[0];
-		String nameFile = args[1];
+		String namesFile = args[1];
 		String topoFile = args[2];
-		Names names = new Names(nameFile);
-		Topology topo = new Topology(topoFile);
-		int port = names.resolve_port(myName);
-		System.err.println("Branch server " + myName + " starting on port " + port);
-		BranchServer thisServer = new BranchServer(myName, port);
-		thisServer.start();
+		NetworkInfo net = new NetworkInfo(myName, namesFile, topoFile);
+		BranchServer branch = new BranchServer(myName, net);
+		branch.start();
 	}
 	
 }
