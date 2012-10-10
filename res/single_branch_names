@@ -1,2 +1,2 @@
-aa_server	10000
-aa_gui	10001
+aa_server	localhost	10000
+aa_gui	localhost	10001
