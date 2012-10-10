@@ -20,7 +20,7 @@ public class BankRequestMessage extends BaseMessage {
 	private static final long serialVersionUID = 1L;
 	
 	public RequestType requestType;
-	public int serial;
+	public long serial;
 	public String account;
 	public String accountInto;
 	public int amount;

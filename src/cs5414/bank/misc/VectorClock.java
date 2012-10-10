@@ -4,13 +4,13 @@ import java.util.HashMap;
 
 public class VectorClock {
 	
-	private HashMap<String, Integer> subClocks;
+	private HashMap<String, Long> subClocks;
 	
 	public VectorClock() {
-		subClocks = new HashMap<String, Integer>();
+		subClocks = new HashMap<String, Long>();
 	}
 	
-	public int getClockForName(String name) {
+	public long getClockForName(String name) {
 		if (subClocks.containsKey(name)) {
 			return subClocks.get(name);
 		} else {
@@ -18,8 +18,8 @@ public class VectorClock {
 		}
 	}
 	
-	public int incrementClockForName(String name) {
-		int currentSubClockVal = 0;
+	public long incrementClockForName(String name) {
+		long currentSubClockVal = 0;
 		if (subClocks.containsKey(name)) {
 			currentSubClockVal = subClocks.get(name);
 		}
@@ -28,8 +28,8 @@ public class VectorClock {
 		return currentSubClockVal;
 	}
 	
-	public int setClockForNameToAtLeast(String name, int newVal) {
-		int currentSubClockVal = 0;
+	public long setClockForNameToAtLeast(String name, long newVal) {
+		long currentSubClockVal = 0;
 		if (subClocks.containsKey(name)) {
 			currentSubClockVal = subClocks.get(name);
 		}
