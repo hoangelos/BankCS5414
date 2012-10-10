@@ -6,6 +6,6 @@ public class SubSnapshotDeliveryMessage extends BaseMessage {
 
 	private static final long serialVersionUID = 1L;
 	
-	LocalSubSnapshot snapshot;
+	public LocalSubSnapshot snapshot;
 
 }

@@ -7,6 +7,7 @@ import cs5414.bank.message.BankRequestMessage;
 import cs5414.bank.message.BankRequestMessage.RequestType;
 import cs5414.bank.message.BaseMessage;
 import cs5414.bank.message.RequestSnapshotMessage;
+import cs5414.bank.message.SubSnapshotDeliveryMessage;
 import cs5414.bank.message.TakeSnapshotMessage;
 import cs5414.bank.misc.LocalSubSnapshot;
 import cs5414.bank.misc.VectorClock;
@@ -50,6 +51,12 @@ public class BranchServer extends BaseServer {
 					snapshotsInProgress.remove(snapshotMessage.uid);
 					System.err.println("Finished snapshot:");
 					System.err.println(snapshot);
+					SubSnapshotDeliveryMessage delivery =
+							new SubSnapshotDeliveryMessage();
+					delivery.source = servName;
+					delivery.destination = branchPrefix + "_gui";
+					delivery.snapshot = snapshot;
+					senderClient.sendMessage(delivery);
 				} else {
 					//nothing?
 				}
@@ -72,6 +79,12 @@ public class BranchServer extends BaseServer {
 					snapshotsInProgress.remove(snapshotMessage.uid);
 					System.err.println("Finished snapshot:");
 					System.err.println(snapshot);
+					SubSnapshotDeliveryMessage delivery =
+							new SubSnapshotDeliveryMessage();
+					delivery.source = servName;
+					delivery.destination = branchPrefix + "_gui";
+					delivery.snapshot = snapshot;
+					senderClient.sendMessage(delivery);
 				}
 			}
 		} else if (message instanceof BankRequestMessage) {
