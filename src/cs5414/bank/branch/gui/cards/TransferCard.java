@@ -13,9 +13,8 @@ import javax.swing.SwingConstants;
 
 import cs5414.bank.branch.gui.BranchGUI;
 import cs5414.bank.branch.gui.Constants;
-import cs5414.bank.message.Message;
-import cs5414.bank.message.TransferMessage;
-import cs5414.bank.network.Client;
+import cs5414.bank.message.BankRequestMessage;
+import cs5414.bank.network.MessageSenderClient;
 
 public class TransferCard extends JPanel implements ActionListener {
 	private JTextField acctFromField;
@@ -27,6 +26,32 @@ public class TransferCard extends JPanel implements ActionListener {
 		//Transfer Card Details
 		super(new GridLayout(5,2));
 		home = maingui;
+		createPanel();
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if (Constants.DO_TRANSFER == e.getActionCommand()) {
+			String fromAcct = acctFromField.getText();
+			String toAcct = acctToField.getText();
+			int amt = Integer.parseInt(amtField.getText());
+			long serial = home.getUID();
+			BankRequestMessage message = new BankRequestMessage();
+			message.source = BranchGUI.name;
+			message.destination = BranchGUI.branch_name;
+			message.account = fromAcct;
+			message.accountInto = toAcct;
+			message.amount = amt;
+			message.serial = serial;
+			message.requestType = BankRequestMessage.RequestType.TRANSFER;
+			MessageSenderClient testClient = new MessageSenderClient(BranchGUI.name, BranchGUI.net);
+
+			testClient.sendMessage(message);
+			removeAll();
+			createPanel();
+		}
+	}
+
+	public void createPanel() {
 		JLabel lblXferFromAcct = new JLabel("From Account #");
 		lblXferFromAcct.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblXferFromAcct.setBounds(16, 23, 75, 16);
@@ -65,30 +90,8 @@ public class TransferCard extends JPanel implements ActionListener {
 		
 		JButton btnXferCancel = new JButton("Cancel");
 		btnXferCancel.setActionCommand(Constants.MENU_PANEL);
-		btnXferCancel.addActionListener(maingui);
+		btnXferCancel.addActionListener(home);
 		btnXferCancel.setBounds(186, 176, 117, 29);
 		this.add(btnXferCancel);	
 	}
-	
-	public void actionPerformed(ActionEvent e) {
-		if (Constants.DO_TRANSFER == e.getActionCommand()) {
-			String fromAcct = acctFromField.getText();
-			String toAcct = acctToField.getText();
-			int amt = Integer.parseInt(amtField.getText());
-			String serial = home.getUID();
-			TransferMessage message = new TransferMessage(null, null, null, serial, fromAcct, toAcct, amt);
-			Client testClient = new Client("branchgui_client");
-			try {
-				String host = BranchGUI.names.resolve_host(BranchGUI.branch_name);
-				int port = BranchGUI.names.resolve_port(BranchGUI.branch_name);
-				Message msg = testClient.sendMessage(host, port, message);
-				System.err.println("Send works");
-			} catch (IOException err) {
-				System.err.println("Error in sending Query Message. IO Exception");
-			} catch (ClassNotFoundException err) {
-				System.err.println("Error in sending Query Message. Class Not Found");
-			}
-		}
-	}
-
 }
