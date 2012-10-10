@@ -8,8 +8,10 @@ import javax.swing.*;
 
 import cs5414.bank.branch.gui.Constants;
 import cs5414.bank.branch.gui.cards.*;
-import cs5414.bank.network.Names;
-import cs5414.bank.network.Topology;
+import cs5414.bank.message.BankReplyMessage;
+import cs5414.bank.message.BaseMessage;
+import cs5414.bank.network.BaseServer;
+import cs5414.bank.network.NetworkInfo;
 
 public class BranchGUI implements ActionListener {
 	private JFrame frame;
@@ -18,8 +20,7 @@ public class BranchGUI implements ActionListener {
 	static private MenuCard menuCard;
 	static public String name;
 	static public String branch_name;
-	static public Topology topo;
-	static public Names names;
+	static public NetworkInfo net;
 	static public String[] jvmID;
     
 	/**
@@ -30,8 +31,7 @@ public class BranchGUI implements ActionListener {
 		branch_name = args[1];
 		String nameFile = args[2];
 		String topoFile = args[3];
-		names = new Names(nameFile);
-		topo = new Topology(topoFile);
+		net = new NetworkInfo(name, nameFile, topoFile);
 		System.err.println("BranchGUI " + name + " started");
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -52,16 +52,18 @@ public class BranchGUI implements ActionListener {
 		name = my_name;
 		branch_name = my_branch_name;
 		jvmID = ManagementFactory.getRuntimeMXBean().getName().split("@");
+		ReplyReceiverServer serv = new ReplyReceiverServer(my_name, net);
+		serv.start();
 		initialize();
 	}
 
-	public String getUID() {
+	public long getUID() {
 		java.util.Date today = new java.util.Date();
 		java.sql.Timestamp ts1 = new java.sql.Timestamp(today.getTime());
 		String tsTime1 = String.valueOf(ts1.getTime());
 		
 		String UID = jvmID[0] + tsTime1;
-		return UID;
+		return Long.valueOf(UID);
 	}
 	
 	/**
@@ -112,6 +114,7 @@ public class BranchGUI implements ActionListener {
 		//Add panel to frame
 		frame.getContentPane().add(panel);
 	}
+	
 	public void actionPerformed(ActionEvent e) {
 		
 		if ( (Constants.MENU_PANEL == e.getActionCommand()) ||
@@ -122,4 +125,30 @@ public class BranchGUI implements ActionListener {
 			menuCard.actionPerformed(e);
 		} 
 	}
+	
+	private class ReplyReceiverServer extends BaseServer {
+		
+		private int counter;
+		
+		public ReplyReceiverServer(String name, NetworkInfo net) {
+			super(name, net);
+			counter = 0;
+		}
+		
+		protected void processMessage(BaseMessage message) {
+			System.err.println("Message received #" + counter + ": " + message);
+			++counter;
+			
+			BankReplyMessage msg = (BankReplyMessage) message;
+			
+			System.err.println("Results Coming in");
+			int balance = msg.balance;
+			String account = msg.account;
+			BranchGUI.resultsCard.display(account, balance);
+			CardLayout cl = (CardLayout) (BranchGUI.panel.getLayout());
+			cl.show(BranchGUI.panel, Constants.RESULTS_PANEL);
+		}
+		
+	}
+	
 }

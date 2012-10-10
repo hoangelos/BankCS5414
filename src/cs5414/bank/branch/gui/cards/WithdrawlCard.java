@@ -14,10 +14,8 @@ import javax.swing.SwingConstants;
 
 import cs5414.bank.branch.gui.Constants;
 import cs5414.bank.branch.gui.BranchGUI;
-import cs5414.bank.message.Message;
-import cs5414.bank.message.ResultMessage;
-import cs5414.bank.message.WithdrawMessage;
-import cs5414.bank.network.Client;
+import cs5414.bank.message.BankRequestMessage;
+import cs5414.bank.network.MessageSenderClient;
 
 public class WithdrawlCard extends JPanel implements ActionListener  {
 	private JTextField acctField;
@@ -29,85 +27,67 @@ public class WithdrawlCard extends JPanel implements ActionListener  {
 		home = maingui;
 		//WithDrawl Card Details
 
-		createPanel(this, null, -1, null, -1);
+		createPanel();
 	}
 	
 	public void actionPerformed(ActionEvent e) {
 		if (Constants.DO_WITHDRAWL == e.getActionCommand()) {
 			String acct = acctField.getText();
 			int amt = Integer.parseInt(amtField.getText());
-			String serial = home.getUID();
-			WithdrawMessage message = new WithdrawMessage(BranchGUI.name, BranchGUI.branch_name, null, serial, acct, amt);
-			Client testClient = new Client("branchgui_client");
-			try {
-				String host = BranchGUI.names.resolve_host(BranchGUI.branch_name);
-				int port = BranchGUI.names.resolve_port(BranchGUI.branch_name);
-				ResultMessage msg = (ResultMessage) (testClient.sendMessage(host, port, message));
-				System.err.println("Withdrawl Results Coming in");
-				amtField.setText(null);
-				acctField.setText(null);
-				JPanel withdrawPanel = new JPanel(new GridLayout(4,2));
-				int balance = msg.getResult();
-				WithdrawMessage origMsg = (WithdrawMessage) (msg.getMsg());
-				createPanel(withdrawPanel, origMsg.getAccount(), origMsg.getAmount(), origMsg.getSerial(), balance);
-				BranchGUI.resultsCard.display(withdrawPanel, balance);
-				CardLayout cl = (CardLayout) (BranchGUI.panel.getLayout());
-				cl.show(BranchGUI.panel, Constants.RESULTS_PANEL);
-				removeAll();
-				createPanel(this, null, -1, null, -1);
-			} catch (IOException err) {
-				System.err.println("Error in sending Withdrawl Message. IO Exception");
-			} catch (ClassNotFoundException err) {
-				System.err.println("Error in sending Withdrawl Message. Class Not Found");
-			}
+			long serial = home.getUID();
+			BankRequestMessage message = new BankRequestMessage();
+			message.source = BranchGUI.name;
+			message.destination = BranchGUI.branch_name;
+			message.account = acct;
+			message.amount = amt;
+			message.serial = serial;
+			message.requestType = BankRequestMessage.RequestType.WITHDRAW;
+			MessageSenderClient testClient = new MessageSenderClient(BranchGUI.name, BranchGUI.net);
+
+			testClient.sendMessage(message);
+			
+			amtField.setText(null);
+			acctField.setText(null);
+			removeAll();
+			createPanel();
+
 		} else if(Constants.MENU_PANEL == e.getActionCommand()) {
-			createPanel(this, null, -1, null, -1);
+			createPanel();
 			home.actionPerformed(e);
 		}
 	}
 	
-	private void createPanel(JPanel panelToAdd, String acct, int amt, String serial, int balance) {
+	private void createPanel() {
 		JLabel lblTestLabel = new JLabel("Account #");
 		lblTestLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblTestLabel.setBounds(16, 23, 75, 16);
-		panelToAdd.add(lblTestLabel);
+		this.add(lblTestLabel);
 		
 		acctField = new JTextField();
 		acctField.setColumns(10);
 		acctField.setBounds(93, 14, 141, 35);
-		panelToAdd.add(acctField);
-		if (acct != null) {
-			acctField.setText(acct);
-		}
+		this.add(acctField);
 		
 		JLabel lblAmount = new JLabel("Amount");
 		lblAmount.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblAmount.setBounds(16, 81, 75, 16);
-		panelToAdd.add(lblAmount);
+		this.add(lblAmount);
 		
 		amtField = new JTextField();
 		amtField.setColumns(10);
 		amtField.setBounds(93, 72, 141, 35);
-		panelToAdd.add(amtField);
-		if (amt >= 0) {
-			amtField.setText(Integer.toString(amt));
-		}
+		this.add(amtField);
+
+		JButton btnWithdraw = new JButton("Withdraw");
+		btnWithdraw.setActionCommand(Constants.DO_WITHDRAWL);
+		btnWithdraw.addActionListener(this);
+		btnWithdraw.setBounds(71, 176, 117, 29);
+		this.add(btnWithdraw);
 		
-		if(balance >= 0) {
-			acctField.setEnabled(false);
-			amtField.setEnabled(false);
-		} else {
-			JButton btnWithdraw = new JButton("Withdraw");
-			btnWithdraw.setActionCommand(Constants.DO_WITHDRAWL);
-			btnWithdraw.addActionListener(this);
-			btnWithdraw.setBounds(71, 176, 117, 29);
-			panelToAdd.add(btnWithdraw);
-			
-			JButton btnWithdrawlCancel = new JButton("Cancel");
-			btnWithdrawlCancel.setActionCommand(Constants.MENU_PANEL);
-			btnWithdrawlCancel.addActionListener(home);
-			btnWithdrawlCancel.setBounds(186, 176, 117, 29);
-			panelToAdd.add(btnWithdrawlCancel);
-		}
+		JButton btnWithdrawlCancel = new JButton("Cancel");
+		btnWithdrawlCancel.setActionCommand(Constants.MENU_PANEL);
+		btnWithdrawlCancel.addActionListener(home);
+		btnWithdrawlCancel.setBounds(186, 176, 117, 29);
+		this.add(btnWithdrawlCancel);
 	}
 }

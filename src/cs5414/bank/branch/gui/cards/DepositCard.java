@@ -14,9 +14,8 @@ import javax.swing.SwingConstants;
 
 import cs5414.bank.branch.gui.BranchGUI;
 import cs5414.bank.branch.gui.Constants;
-import cs5414.bank.message.DepositMessage;
-import cs5414.bank.message.ResultMessage;
-import cs5414.bank.network.Client;
+import cs5414.bank.message.BankRequestMessage;
+import cs5414.bank.network.MessageSenderClient;
 
 public class DepositCard extends JPanel implements ActionListener {
 	private JTextField acctField;
@@ -27,83 +26,64 @@ public class DepositCard extends JPanel implements ActionListener {
 		//Deposit Card Details
 		super(new GridLayout(5,2));
 		home = maingui;
-		createPanel(this, null, -1, null, -1);
+		createPanel();
 	}
 	
 	public void actionPerformed(ActionEvent e) {
 		if (Constants.DO_DEPOSIT == e.getActionCommand()) {
 			String acct = acctField.getText();
 			int amt = Integer.parseInt(amtField.getText());
-			String serial = home.getUID();
-			DepositMessage message = new DepositMessage(null, null, null, serial, acct, amt);
-			Client testClient = new Client("branchgui_client");
-			try {
-				String host = BranchGUI.names.resolve_host(BranchGUI.branch_name);
-				int port = BranchGUI.names.resolve_port(BranchGUI.branch_name);
-				ResultMessage msg = (ResultMessage) (testClient.sendMessage(host, port, message));
-				System.err.println("Deposit Results Coming in");
-				amtField.setText(null);
-				acctField.setText(null);
-				JPanel depositPanel = new JPanel(new GridLayout(4,2));
-				int balance = msg.getResult();
-				DepositMessage origMsg = (DepositMessage) (msg.getMsg());
-				createPanel(depositPanel, origMsg.getAccount(), origMsg.getAmount(), origMsg.getSerial(), balance);
-				BranchGUI.resultsCard.display(depositPanel, balance);
-				CardLayout cl = (CardLayout) (BranchGUI.panel.getLayout());
-				cl.show(BranchGUI.panel, Constants.RESULTS_PANEL);
-				removeAll();
-				createPanel(this, null, -1, null, -1);
-			} catch (IOException err) {
-				System.err.println("Error in sending Deposit Message. IO Exception");
-			} catch (ClassNotFoundException err) {
-				System.err.println("Error in sending Deposit Message. Class Not Found");
-			}
+			long serial = home.getUID();
+			BankRequestMessage message = new BankRequestMessage();
+			message.source = BranchGUI.name;
+			message.destination = BranchGUI.branch_name;
+			message.serial = serial;
+			message.account = acct;
+			message.amount = amt;
+			message.requestType = BankRequestMessage.RequestType.DEPOSIT;
+			MessageSenderClient testClient = new MessageSenderClient(BranchGUI.name, BranchGUI.net);
+
+			testClient.sendMessage(message);
+			amtField.setText(null);
+			acctField.setText(null);
+			removeAll();
+			createPanel();
+
 		}
 	}
 	
-	public void createPanel(JPanel panelToAdd, String acct, int amt, String serial, int balance) {
+	public void createPanel() {
 		JLabel lblCancelAcct = new JLabel("Account #");
 		lblCancelAcct.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblCancelAcct.setBounds(16, 23, 75, 16);
-		panelToAdd.add(lblCancelAcct);
+		this.add(lblCancelAcct);
 		
 		acctField = new JTextField();
 		acctField.setBounds(93, 14, 141, 35);
-		panelToAdd.add(acctField);
+		this.add(acctField);
 		acctField.setColumns(10);
-		if (acct != null) {
-			acctField.setText(acct);
-		}
 		
 		JLabel lblCancelAmount = new JLabel("Amount");
 		lblCancelAmount.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblCancelAmount.setBounds(16, 81, 75, 16);
-		panelToAdd.add(lblCancelAmount);
+		this.add(lblCancelAmount);
 		
 		amtField = new JTextField();
 		amtField.setColumns(10);
 		amtField.setBounds(93, 72, 141, 35);
-		panelToAdd.add(amtField);
-		if (amt >= 0) {
-			amtField.setText(Integer.toString(amt));
-		}
+		this.add(amtField);
 		
-		if(balance >= 0) {
-			acctField.setEnabled(false);
-			amtField.setEnabled(false);
-		} else {
-			JButton btnDoDeposit = new JButton("Deposit");
-			btnDoDeposit.setActionCommand(Constants.DO_DEPOSIT);
-			btnDoDeposit.addActionListener(this);
-			btnDoDeposit.setBounds(71, 176, 117, 29);
-			panelToAdd.add(btnDoDeposit);
-			
-			JButton btnDepositCancel = new JButton("Cancel");
-			btnDepositCancel.setActionCommand(Constants.MENU_PANEL);
-			btnDepositCancel.addActionListener(home);
-			btnDepositCancel.setBounds(186, 176, 117, 29);
-			panelToAdd.add(btnDepositCancel);	
-		}
+		JButton btnDoDeposit = new JButton("Deposit");
+		btnDoDeposit.setActionCommand(Constants.DO_DEPOSIT);
+		btnDoDeposit.addActionListener(this);
+		btnDoDeposit.setBounds(71, 176, 117, 29);
+		this.add(btnDoDeposit);
+		
+		JButton btnDepositCancel = new JButton("Cancel");
+		btnDepositCancel.setActionCommand(Constants.MENU_PANEL);
+		btnDepositCancel.addActionListener(home);
+		btnDepositCancel.setBounds(186, 176, 117, 29);
+		this.add(btnDepositCancel);	
 	}
 
 }
