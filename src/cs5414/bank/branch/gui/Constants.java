@@ -15,6 +15,9 @@ public final class Constants {
     public static final String DO_TRANSFER = "Do Transfer";
     public static final String SHOW_TRANSFER_RESULTS = "public static final String";
     public static final String RESULTS_PANEL = "Results Panel";
+    public static final String TAKE_SNAPSHOT_PANEL = "Take Snapshot Panel";
+    public static final String SHOW_SNAPSHOT_PANEL = "Show Snapshot Panel";
+    public static final String DO_SNAPSHOT = "Do Snapshot";
     
     private Constants() {
         throw new AssertionError();

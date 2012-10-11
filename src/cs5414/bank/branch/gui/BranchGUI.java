@@ -10,6 +10,7 @@ import cs5414.bank.branch.gui.Constants;
 import cs5414.bank.branch.gui.cards.*;
 import cs5414.bank.message.BankReplyMessage;
 import cs5414.bank.message.BaseMessage;
+import cs5414.bank.message.SubSnapshotDeliveryMessage;
 import cs5414.bank.network.BaseServer;
 import cs5414.bank.network.NetworkInfo;
 
@@ -17,6 +18,7 @@ public class BranchGUI implements ActionListener {
 	private JFrame frame;
 	static public JPanel panel;
 	static public ResultsCard resultsCard;
+	static public DisplaySnapshotCard displaySnapshotCard;
 	static private MenuCard menuCard;
 	static public String name;
 	static public String branch_name;
@@ -107,9 +109,15 @@ public class BranchGUI implements ActionListener {
 		TransferCard transferCard = new TransferCard(this);
 		panel.add(transferCard, Constants.TRANSFER_PANEL);
 		
+		TakeSnapshotCard takeSnapshotCard = new TakeSnapshotCard(this);
+		panel.add(takeSnapshotCard, Constants.TAKE_SNAPSHOT_PANEL);
+		
 		//Setup Results scren
 		resultsCard = new ResultsCard(this);
 		panel.add(resultsCard, Constants.RESULTS_PANEL);
+		
+		displaySnapshotCard = new DisplaySnapshotCard(this);
+		panel.add(displaySnapshotCard, Constants.SHOW_SNAPSHOT_PANEL);
 		
 		//Add panel to frame
 		frame.getContentPane().add(panel);
@@ -139,14 +147,25 @@ public class BranchGUI implements ActionListener {
 			System.err.println("Message received #" + counter + ": " + message);
 			++counter;
 			
-			BankReplyMessage msg = (BankReplyMessage) message;
-			
-			System.err.println("Results Coming in");
-			int balance = msg.balance;
-			String account = msg.account;
-			BranchGUI.resultsCard.display(account, balance);
-			CardLayout cl = (CardLayout) (BranchGUI.panel.getLayout());
-			cl.show(BranchGUI.panel, Constants.RESULTS_PANEL);
+			if(message instanceof BankReplyMessage) {
+				BankReplyMessage msg = (BankReplyMessage) message;
+				
+				System.err.println("Results Coming in");
+				int balance = msg.balance;
+				String account = msg.account;
+				BranchGUI.resultsCard.display(account, balance);
+				
+				CardLayout cl = (CardLayout) (BranchGUI.panel.getLayout());
+				cl.show(BranchGUI.panel, Constants.RESULTS_PANEL);				
+			} else if (message instanceof SubSnapshotDeliveryMessage) {
+				SubSnapshotDeliveryMessage msg = (SubSnapshotDeliveryMessage) message;
+				System.err.println("Snapshot Coming in " + msg.snapshot.toString());
+				BranchGUI.displaySnapshotCard.displayPanel(msg.snapshot);
+
+				CardLayout cl = (CardLayout) (BranchGUI.panel.getLayout());
+				cl.show(BranchGUI.panel, Constants.SHOW_SNAPSHOT_PANEL);
+			}
+
 		}
 		
 	}

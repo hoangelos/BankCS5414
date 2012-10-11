@@ -48,6 +48,13 @@ public class MenuCard extends JPanel implements ActionListener {
 		btnShowTransfer.setActionCommand(Constants.TRANSFER_PANEL);
 		btnShowTransfer.setBounds(6, 221, 117, 29);
 		this.add(btnShowTransfer);
+		
+		JButton btnDoSnapshot = new JButton("Snapshot");
+		btnDoSnapshot.setBackground(new Color(47, 79, 79));
+		btnDoSnapshot.addActionListener(this);
+		btnDoSnapshot.setActionCommand(Constants.TAKE_SNAPSHOT_PANEL);
+		btnDoSnapshot.setBounds(6, 279, 117, 29);
+		this.add(btnDoSnapshot);		
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -55,7 +62,8 @@ public class MenuCard extends JPanel implements ActionListener {
 			 (Constants.WITHDRAW_PANEL == e.getActionCommand()) ||
 			 (Constants.DEPOSIT_PANEL == e.getActionCommand()) ||
 			 (Constants.QUERY_PANEL == e.getActionCommand()) ||
-			 (Constants.TRANSFER_PANEL == e.getActionCommand())) {
+			 (Constants.TRANSFER_PANEL == e.getActionCommand()) ||
+			 (Constants.TAKE_SNAPSHOT_PANEL == e.getActionCommand())) {
 			CardLayout cl = (CardLayout) (BranchGUI.panel.getLayout());
 			cl.show(BranchGUI.panel, e.getActionCommand());
 			BranchGUI.resultsCard.removeAll();

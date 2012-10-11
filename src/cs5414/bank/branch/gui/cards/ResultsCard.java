@@ -9,13 +9,19 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import cs5414.bank.branch.gui.BranchGUI;
 import cs5414.bank.branch.gui.Constants;
 
 public class ResultsCard extends JPanel {
 	private BranchGUI homeScreen;
+    private JTextPane jtp;
 	
 	public ResultsCard(BranchGUI maingui) {
 		super(new GridLayout(3,1));
@@ -23,33 +29,23 @@ public class ResultsCard extends JPanel {
 	}
 	
 	public void display(String account, int balance) {
-		JPanel top = new JPanel(new BorderLayout());
+		jtp = new JTextPane();
+		StyledDocument doc = jtp.getStyledDocument();
+
+		SimpleAttributeSet keyWord = new SimpleAttributeSet();
+		StyleConstants.setBold(keyWord, true);
 		
-		//Add label for results
-		JLabel acctLbl = new JLabel("Account");
-		acctLbl.setHorizontalAlignment(SwingConstants.RIGHT);
-		top.add(acctLbl, BorderLayout.WEST);
+		try {
+			doc.insertString(0, "Account", keyWord);
+			doc.insertString(doc.getLength(), "\t"+account+"\n", null);
+			doc.insertString(doc.getLength(), "Balance", keyWord);
+			doc.insertString(doc.getLength(), "\t"+String.valueOf(balance), null);
+		} catch(BadLocationException e) {
+	    	System.out.println(e);
+		}
 		
-		//Add the actual results
-		JTextField acctTxtField = new JTextField();
-		acctTxtField.setText(account);
-		acctTxtField.setEnabled(false);
-		top.add(acctTxtField, BorderLayout.EAST);
-		this.add(top);
-		
-		JPanel rowTwo = new JPanel(new BorderLayout());
-		
-		//Add label for results
-		JLabel resultLbl = new JLabel("Balance");
-		resultLbl.setHorizontalAlignment(SwingConstants.RIGHT);
-		rowTwo.add(resultLbl, BorderLayout.WEST);
-		
-		//Add the actual results
-		JTextField resultTxtField = new JTextField();
-		resultTxtField.setText(Integer.toString(balance));
-		resultTxtField.setEnabled(false);
-		rowTwo.add(resultTxtField, BorderLayout.EAST);
-		this.add(rowTwo);
+		jtp.setEditable(false);
+		this.add(jtp);
 		
 		//Add button to take us back home
 		JButton btnWithdrawlCancel = new JButton("Main Menu");
