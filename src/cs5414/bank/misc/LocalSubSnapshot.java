@@ -24,7 +24,14 @@ public class LocalSubSnapshot implements Serializable {
 			HashMap<String, Integer> balances, NetworkInfo network) {
 		this.uid = uid;
 		atServer = servName;
-		initialBalances = new HashMap<String, Integer>(balances);
+		initialBalances = new HashMap<String, Integer>();
+		String prefix = servName.substring(0, 2);
+		for (String name: balances.keySet()) {
+			int bal = balances.get(name);
+			if (bal != 0) {
+				initialBalances.put(prefix + "." + name, bal);
+			}
+		}
 		seenMessagesInTransit = new ArrayList<BaseMessage>();
 		waitingToReceiveFrom = new HashSet<String>();
 		for (String inLink: network.getInboundLinks(servName)) {
