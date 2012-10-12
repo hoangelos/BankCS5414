@@ -3,17 +3,13 @@ Minglian Pan mp492
 
 Peter did:
 
-interface design
-GUI
-client logic
-client-related messaging
-integration of client and server
-functional testing
-debugging
-docs
-miscellaneous
+Changed GUI for result screens.
+Added GUI functionality for Transfer.
+Added Screenshot functionality for GUI.
+Add Testing scripts for loading data and inititing snapshot.
+Adding documentation and formating.
 
-total ~35 hours
+total ~24 hours
 
 Ming did:
 
