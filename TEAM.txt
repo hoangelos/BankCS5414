@@ -17,13 +17,15 @@ total ~35 hours
 
 Ming did:
 
-server process
-server loop/networking
-topology and name-resolution
-server logic
-message structure
+partial network layer rewrite
+partial server rewrite
+fix problems from phase 1
+snapshot processing logic
+unit testing
+network testing
 debugging
 docs
 miscellaneous
 
-total ~15 hours
+total ~25 hours ??
+not too sure
