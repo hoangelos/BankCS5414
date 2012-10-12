@@ -1,0 +1,7 @@
+We tested our system from the GUI.
+
+We wrote the following test clients and unit tests. See HowToRunTests.txt for more details.
+
+- test of snapshot on topology with 4 nodes
+- test of transactions on single branch
+- test of network layer ping/pong
