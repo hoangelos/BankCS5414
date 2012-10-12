@@ -4,26 +4,33 @@ bank_1/ - main project directory
 bank_1/src/ - source files
 bank_1/bin/ - compiled classes; can run from here if desired
 bank_1.jar - pre-built jar; please test using this
-example_names - example name/connection-info specification file
-example_topology - example link topology specification file
+bank_1/res/ - example name files and topology files
+
+HowToRunTests.txt - description of procedure for running our unit tests
+TestPlan.txt - explanation of test strategy
+TOPOexp.txt - topology requirements
 
 Jar build instructions:
 	(included for documenting purposes, but please test using our pre-built jar!)
+
+(optional) load bank_1/ into an IDE/editor e.g. Eclipse
 compile all .java files in tree of src/
 place compiled .class files into corresponding tree of bin/
 create jar of overall project e.g. using Eclipse
 
 Setup instructions:
 
-place bank_1.jar in current working directory
-place names file and topology file in current directory
-	(examples of the format are given in example_names and example_topology)
+extract archive
+change to bank_1/ as current working directory
+verify bank_1.jar is in current working directory
+verify src/ and bin/ are in current working directory and contain source and classes, respectively
+verify name files and topology files are in res/ subdirectory of current directory
 
 File formats:
 
 names file is lines of the format "node_name\tnode_host\tnode_port"
 topology file is lines of "node_from\tnode_to"
-where \t is tab
+minus quotes, substitute \t with tab-character, PLEASE NO TRAILING NEWLINE
 Please see examples included.
 
 How to run:
@@ -34,9 +41,9 @@ run java on the corresponding class file
 main class for the branch server is: cs5414.bank.network.BranchServer
 and it takes args: server_name names_file topology_file
 example:
-java -cp bin/ cs5414.bank.network.BranchServer aa_server example_names example_topology
+java -cp bin/ cs5414.bank.network.BranchServer aa_server res/three_one_names res/three_one_topo
 -or-
-java -cp bank_1.jar cs5414.bank.network.BranchServer aa_server example_names example_topology
+java -cp bank_1.jar cs5414.bank.network.BranchServer aa_server res/three_one_names res/three_one_topo
 
 main class for the GUI is:  cs5414.bank.branch.gui.BranchGUI
 and it takes args: gui_name branch_name names_file topology_file

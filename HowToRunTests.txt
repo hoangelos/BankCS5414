@@ -1,0 +1,29 @@
+All tests should be run from top level directory of project bank_1/ as current working directory. Sorry, but we hard-coded some relative paths with that assumption.
+
+Snapshot w/ Three-One Topology Test
+
+This tests the correctness of our snapshot algorithm.
+1. Start all four branches (most easily readable if each gets its own window)
+java -cp bin/ cs5414.bank.network.BranchServer aa_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer bb_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer cc_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer dd_server res/three_one_names res/three_one_topo
+2. Start test client
+java -cp bin/ cs5414.bank.test.TestThreeOneSnapshot
+Note that this test produces an exception stack trace at the branches when they try to contact their GUIs. But at that point, the debug output from the branches should already show the correct local sub-snapshot. If you were to also launch GUIs, they would receive the reply.
+
+Single Branch Test
+
+This tests the correctness of our partial rewrite of our branch request handling code.
+1. Start a single branch
+java -cp bin/ cs5414.bank.network.BranchServer aa_server res/single_branch_names res/single_branch_topo
+2. Start test client
+java -cp bin/ cs5414.bank.test.TestSingleBranchServer
+
+Ping Test
+
+This tests the correctness of our partial rewrite of our networking code.
+1. Start the echo server
+java -cp bin/ cs5414.bank.test.PingEchoServer
+2. Start the ping sender client
+java -cp bin/ cs5414.bank.test.PingSender

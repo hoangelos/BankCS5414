@@ -1,0 +1,9 @@
+aa_server	localhost	10000
+bb_server	localhost	10001
+cc_server	localhost	10002
+dd_server	localhost	10003
+aa_gui	localhost	10010
+bb_gui	localhost	10011
+cc_gui	localhost	10012
+dd_gui	localhost	10013
+ee_special	localhost	10020
