@@ -22,7 +22,8 @@ public class InTransitSnapshotTest extends BaseServer {
 		BankRequestMessage transfer1 = new BankRequestMessage();
 		transfer1.requestType = RequestType.TRANSFER;
 		transfer1.source = servName;
-		transfer1.serial = System.currentTimeMillis();
+		//assume human operator waits > 100 ms between runs
+		transfer1.serial = System.currentTimeMillis() + 1;
 		transfer1.amount = 5;
 		transfer1.account = "dd.0001";
 		transfer1.accountInto = "cc.0002";
@@ -32,7 +33,7 @@ public class InTransitSnapshotTest extends BaseServer {
 		BankRequestMessage transfer2 = new BankRequestMessage();
 		transfer2.requestType = RequestType.TRANSFER;
 		transfer2.source = servName;
-		transfer2.serial = System.currentTimeMillis();
+		transfer2.serial = System.currentTimeMillis() + 2;
 		transfer2.amount = 5;
 		transfer2.account = "cc.0001";
 		transfer2.accountInto = "aa.0001";
@@ -48,7 +49,7 @@ public class InTransitSnapshotTest extends BaseServer {
 		BankRequestMessage transfer3 = new BankRequestMessage();
 		transfer3.requestType = RequestType.TRANSFER;
 		transfer3.source = servName;
-		transfer3.serial = System.currentTimeMillis();
+		transfer3.serial = System.currentTimeMillis() + 3;
 		transfer3.amount = 5;
 		transfer3.account = "aa.0001";
 		transfer3.accountInto = "bb.0002";
