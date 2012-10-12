@@ -28,7 +28,8 @@ public class MessageSenderClient {
 				System.err.println("Tried to send directly to unreachable destination!");
 			}
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			System.err.println("Could not send message. Might be unconnected GUI.");
+			//e.printStackTrace(System.err);
 		}
 	}
 	

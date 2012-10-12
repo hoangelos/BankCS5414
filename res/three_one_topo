@@ -16,3 +16,7 @@ ee_special	aa_server
 ee_special	bb_server
 ee_special	cc_server
 ee_special	dd_server
+aa_server	ee_special
+bb_server	ee_special
+cc_server	ee_special
+dd_server	ee_special

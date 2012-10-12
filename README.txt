@@ -1,3 +1,6 @@
+We used our own Phase I code as a base for Phase II.
+We performed a significant partial redesign and rewrite of our network layer and branch server logic. In particular, we fixed our messaging to have correct "fire and forget" semantics and fixed our handling of transfers.
+
 Included files:
 ---------------
 
