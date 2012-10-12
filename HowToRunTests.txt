@@ -2,13 +2,13 @@ All tests should be run from top level directory of project bank_1/ as current w
 
 Ad-hoc Tests w/ GUI
 
-1. Start all four branch servers
-??
-2. Start all four branch GUIs
+1. Start all four branch servers (most easily readable if each gets its own window)
 java -cp bin/ cs5414.bank.network.BranchServer aa_server res/three_one_names res/three_one_topo
 java -cp bin/ cs5414.bank.network.BranchServer bb_server res/three_one_names res/three_one_topo
 java -cp bin/ cs5414.bank.network.BranchServer cc_server res/three_one_names res/three_one_topo
 java -cp bin/ cs5414.bank.network.BranchServer dd_server res/three_one_names res/three_one_topo
+2. Start all four branch GUIs
+??
 3. Issue commands to GUIs
 
 Multi-Snapshot Interleaving w/ Three-One Topology Test
