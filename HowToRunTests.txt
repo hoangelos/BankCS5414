@@ -1,6 +1,37 @@
 All tests should be run from top level directory of project bank_1/ as current working directory. Sorry, but we hard-coded some relative paths with that assumption.
 
+Ad-hoc Tests w/ GUI
+
+1. Start all four branch servers
+??
+2. Start all four branch GUIs
+java -cp bin/ cs5414.bank.network.BranchServer aa_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer bb_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer cc_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer dd_server res/three_one_names res/three_one_topo
+3. Issue commands to GUIs
+
+Multi-Snapshot Interleaving w/ Three-One Topology Test
+
+1. Start all four branches (most easily readable if each gets its own window)
+java -cp bin/ cs5414.bank.network.BranchServer aa_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer bb_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer cc_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer dd_server res/three_one_names res/three_one_topo
+2. ???
+
+
 Snapshot w/ Three-One Topology Test
+1. Start all four branches (most easily readable if each gets its own window)
+java -cp bin/ cs5414.bank.network.BranchServer aa_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer bb_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer cc_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.network.BranchServer dd_server res/three_one_names res/three_one_topo
+2. Start test client
+java -cp bin/ cs5414.bank.test.TestThreeOneSnapshot
+Note that our cross-branch transfers are not atomic because the increment part is implemented as a regular deposit message sent afterward to the receiving branch which will put it at the end of its queue. It is entirely reasonable for a consistent snapshot to get a consistent cut which contains only the first half of a transfer. This test intends to capture this sometimes.
+Note that this test produces an error at the branches when they try to contact their GUIs if the GUIs are not running. But at that point, the debug output from the branches should already show the correct local sub-snapshot. If you were to also launch GUIs, they would accept the connection and receive the reply, and the exceptions would go away.
+
 
 This tests the correctness of our snapshot algorithm.
 1. Start all four branches (most easily readable if each gets its own window)
@@ -10,7 +41,7 @@ java -cp bin/ cs5414.bank.network.BranchServer cc_server res/three_one_names res
 java -cp bin/ cs5414.bank.network.BranchServer dd_server res/three_one_names res/three_one_topo
 2. Start test client
 java -cp bin/ cs5414.bank.test.TestThreeOneSnapshot
-Note that this test produces an exception stack trace at the branches when they try to contact their GUIs. But at that point, the debug output from the branches should already show the correct local sub-snapshot. If you were to also launch GUIs, they would receive the reply.
+Note that this test produces an error at the branches when they try to contact their GUIs if the GUIs are not running. But at that point, the debug output from the branches should already show the correct local sub-snapshot. If you were to also launch GUIs, they would accept the connection and receive the reply, and the exceptions would go away.
 
 Single Branch Test
 
