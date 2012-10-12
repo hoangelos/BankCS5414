@@ -1,16 +1,5 @@
 All tests should be run from top level directory of project bank_1/ as current working directory. Sorry, but we hard-coded some relative paths with that assumption.
 
-Ad-hoc Tests w/ GUI
-
-1. Start all four branch servers (most easily readable if each gets its own window)
-java -cp bin/ cs5414.bank.network.BranchServer aa_server res/three_one_names res/three_one_topo
-java -cp bin/ cs5414.bank.network.BranchServer bb_server res/three_one_names res/three_one_topo
-java -cp bin/ cs5414.bank.network.BranchServer cc_server res/three_one_names res/three_one_topo
-java -cp bin/ cs5414.bank.network.BranchServer dd_server res/three_one_names res/three_one_topo
-2. Start all four branch GUIs
-??
-3. Issue commands to GUIs
-
 Multi-Snapshot Interleaving w/ Three-One Topology Test
 
 1. Start all four branches (most easily readable if each gets its own window)
@@ -18,8 +7,10 @@ java -cp bin/ cs5414.bank.network.BranchServer aa_server res/three_one_names res
 java -cp bin/ cs5414.bank.network.BranchServer bb_server res/three_one_names res/three_one_topo
 java -cp bin/ cs5414.bank.network.BranchServer cc_server res/three_one_names res/three_one_topo
 java -cp bin/ cs5414.bank.network.BranchServer dd_server res/three_one_names res/three_one_topo
-2. ???
-
+2. Start test client
+java -cp bin/ cs5414.bank.test.TestMultiSnapshotInterleaving 
+Note this has same caveats as the test beneath it.
+They do not affect outcome.
 
 Snapshot w/ Three-One Topology Test
 1. Start all four branches (most easily readable if each gets its own window)
@@ -69,10 +60,10 @@ This test ensures that the system works ok with the GUIs.
 		java -cp bin/ cs5414.bank.network.BranchServer cc_server res/three_one_names res/three_one_topo
 		java -cp bin/ cs5414.bank.network.BranchServer dd_server res/three_one_names res/three_one_topo
 	2. Start all four GUIs (most easily readable if each gets its own window)
-		java -cp bin/ cs5414.bank.branch.gui.BUI aa_gui aa_server res/three_one_names res/three_one_topo
-		java -cp bin/ cs5414.bank.branch.gui.BUI bb_gui bb_server res/three_one_names res/three_one_topo
-		java -cp bin/ cs5414.bank.branch.gui.BUI cc_gui cc_server res/three_one_names res/three_one_topo
-		java -cp bin/ cs5414.bank.branch.gui.BUI dd_gui dd_server res/three_one_names res/three_one_topo
+		java -cp bin/ cs5414.bank.branch.gui.BranchGUI aa_gui aa_server res/three_one_names res/three_one_topo
+		java -cp bin/ cs5414.bank.branch.gui.BranchGUI bb_gui bb_server res/three_one_names res/three_one_topo
+		java -cp bin/ cs5414.bank.branch.gui.BranchGUI cc_gui cc_server res/three_one_names res/three_one_topo
+		java -cp bin/ cs5414.bank.branch.gui.BranchGUI dd_gui dd_server res/three_one_names res/three_one_topo
 		[ After the GUIS are up easiest if you arrange them to visualize them seperately ]
 	3. Load the initial data set: 
 		java -cp bin/ cs5414.bank.test.LoadDataTest
