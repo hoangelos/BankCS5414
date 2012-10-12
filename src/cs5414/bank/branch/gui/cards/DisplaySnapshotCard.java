@@ -49,6 +49,8 @@ public class DisplaySnapshotCard  extends JPanel implements ActionListener  {
 	}
 	
 	public void displayPanel(LocalSubSnapshot local_snapshot) {
+
+		removeAll();
 		jtp = new JTextPane();
 		StyledDocument doc = jtp.getStyledDocument();
 		
@@ -70,6 +72,12 @@ public class DisplaySnapshotCard  extends JPanel implements ActionListener  {
 	    }
 
 		this.add(jtp);
+		
+		JButton btnDepositCancel = new JButton("Cancel");
+		btnDepositCancel.setActionCommand(Constants.MENU_PANEL);
+		btnDepositCancel.addActionListener(home);
+		btnDepositCancel.setBounds(186, 176, 117, 29);
+		this.add(btnDepositCancel);	
 	}
 	
 }

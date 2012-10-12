@@ -77,9 +77,9 @@ public class BranchGUI implements ActionListener {
 		frame.getContentPane().setLayout(null);
 		
 		//Setup main GUI settings, title, etc
-		JLabel lblCsBank = new JLabel("CS5414 Bank");
+		JLabel lblCsBank = new JLabel("CS5414 Bank - "+name+" Terminal");
 		lblCsBank.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblCsBank.setBounds(136, 6, 173, 33);
+		lblCsBank.setBounds(6, 6, 373, 33);
 		frame.getContentPane().add(lblCsBank);
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
