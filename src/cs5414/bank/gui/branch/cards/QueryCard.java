@@ -1,4 +1,4 @@
-package cs5414.bank.branch.gui.cards;
+package cs5414.bank.gui.branch.cards;
 
 import java.awt.CardLayout;
 import java.awt.GridLayout;
@@ -12,8 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import cs5414.bank.branch.gui.BranchGUI;
-import cs5414.bank.branch.gui.Constants;
+import cs5414.bank.gui.branch.BranchGUI;
+import cs5414.bank.gui.branch.Constants;
 import cs5414.bank.message.BankReplyMessage;
 import cs5414.bank.message.BankRequestMessage;
 import cs5414.bank.network.MessageSenderClient;

@@ -1,4 +1,4 @@
-package cs5414.bank.branch.gui.cards;
+package cs5414.bank.gui.branch.cards;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -16,8 +16,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import cs5414.bank.branch.gui.BranchGUI;
-import cs5414.bank.branch.gui.Constants;
+import cs5414.bank.gui.branch.BranchGUI;
+import cs5414.bank.gui.branch.Constants;
 
 public class ResultsCard extends JPanel {
 	private BranchGUI homeScreen;

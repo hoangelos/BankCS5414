@@ -1,4 +1,4 @@
-package cs5414.bank.branch.gui;
+package cs5414.bank.gui.branch;
 
 public final class Constants {
     public static final String MENU_PANEL = "Menu Panel";

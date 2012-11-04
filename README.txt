@@ -65,9 +65,9 @@ To Run a Single GUI:
 main class for the GUI is:  cs5414.bank.branch.gui.BranchGUI
 and it takes args: gui_name branch_name names_file topology_file
 example: 
-java -cp bin/ cs5414.bank.branch.gui.branchGUI aa_gui aa_server res/three_one_names res/three_one_topo
+java -cp bin/ cs5414.bank.gui.branch.BranchGUI aa_gui aa_server res/three_one_names res/three_one_topo
 -or-
-java -cp bank_1.jar cs5414.bank.gui.branchGUI aa_gui aa_server res/three_one_names res/three_one_topo
+java -cp bank_1.jar cs5414.bank.gui.branch.BranchGUI aa_gui aa_server res/three_one_names res/three_one_topo
 
 Run-through instructions:
 -------------------------

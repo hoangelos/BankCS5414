@@ -1,4 +1,4 @@
-package cs5414.bank.branch.gui;
+package cs5414.bank.gui.branch;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -6,8 +6,8 @@ import java.lang.management.ManagementFactory;
 
 import javax.swing.*;
 
-import cs5414.bank.branch.gui.Constants;
-import cs5414.bank.branch.gui.cards.*;
+import cs5414.bank.gui.branch.Constants;
+import cs5414.bank.gui.branch.cards.*;
 import cs5414.bank.message.BankReplyMessage;
 import cs5414.bank.message.BaseMessage;
 import cs5414.bank.message.SubSnapshotDeliveryMessage;

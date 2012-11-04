@@ -60,10 +60,10 @@ This test ensures that the system works ok with the GUIs.
 		java -cp bin/ cs5414.bank.network.BranchServer cc_server res/three_one_names res/three_one_topo
 		java -cp bin/ cs5414.bank.network.BranchServer dd_server res/three_one_names res/three_one_topo
 	2. Start all four GUIs (most easily readable if each gets its own window)
-		java -cp bin/ cs5414.bank.branch.gui.BranchGUI aa_gui aa_server res/three_one_names res/three_one_topo
-		java -cp bin/ cs5414.bank.branch.gui.BranchGUI bb_gui bb_server res/three_one_names res/three_one_topo
-		java -cp bin/ cs5414.bank.branch.gui.BranchGUI cc_gui cc_server res/three_one_names res/three_one_topo
-		java -cp bin/ cs5414.bank.branch.gui.BranchGUI dd_gui dd_server res/three_one_names res/three_one_topo
+		java -cp bin/ cs5414.bank.gui.branch.BranchGUI aa_gui aa_server res/three_one_names res/three_one_topo
+		java -cp bin/ cs5414.bank.gui.branch.BranchGUI bb_gui bb_server res/three_one_names res/three_one_topo
+		java -cp bin/ cs5414.bank.gui.branch.BranchGUI cc_gui cc_server res/three_one_names res/three_one_topo
+		java -cp bin/ cs5414.bank.gui.branch.BranchGUI dd_gui dd_server res/three_one_names res/three_one_topo
 		[ After the GUIS are up easiest if you arrange them to visualize them seperately ]
 	3. Load the initial data set: 
 		java -cp bin/ cs5414.bank.test.LoadDataTest
