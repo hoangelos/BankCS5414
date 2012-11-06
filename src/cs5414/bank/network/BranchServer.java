@@ -6,6 +6,7 @@ import cs5414.bank.message.BankReplyMessage;
 import cs5414.bank.message.BankRequestMessage;
 import cs5414.bank.message.BankRequestMessage.RequestType;
 import cs5414.bank.message.BaseMessage;
+import cs5414.bank.message.FailureDetectorMessage;
 import cs5414.bank.message.RequestSnapshotMessage;
 import cs5414.bank.message.SubSnapshotDeliveryMessage;
 import cs5414.bank.message.TakeSnapshotMessage;
@@ -19,6 +20,7 @@ public class BranchServer extends BaseServer {
 	private HashMap<String, Integer> balances;
 	private VectorClock maxUsedSerials;
 	private HashMap<String, LocalSubSnapshot> snapshotsInProgress;
+	private FailureDetector oracle;
 	
 	public BranchServer(String name, NetworkInfo net) {
 		super(name, net);
@@ -27,6 +29,7 @@ public class BranchServer extends BaseServer {
 		balances = new HashMap<String, Integer>();
 		maxUsedSerials = new VectorClock();
 		snapshotsInProgress = new HashMap<String, LocalSubSnapshot>();
+		oracle = new FailureDetector();
 	}
 	
 	protected void processMessage(BaseMessage message) {
@@ -60,6 +63,7 @@ public class BranchServer extends BaseServer {
 				} else {
 					//nothing?
 				}
+				
 			} else {
 				snapshot = new LocalSubSnapshot(snapshotMessage.uid,
 						servName, balances, network);
@@ -183,6 +187,12 @@ public class BranchServer extends BaseServer {
 				senderClient.sendMessage(replyToSend);
 				System.err.println("Reply sent!");
 			}
+
+		} else if(message instanceof FailureDetectorMessage) {
+
+			FailureDetectorMessage fdMessage =
+					(FailureDetectorMessage) message;
+			oracle.handleTransition(fdMessage);
 		}
 	}
 	

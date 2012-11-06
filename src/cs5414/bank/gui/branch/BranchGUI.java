@@ -6,39 +6,34 @@ import java.lang.management.ManagementFactory;
 
 import javax.swing.*;
 
+import cs5414.bank.gui.GUIBase;
 import cs5414.bank.gui.branch.Constants;
 import cs5414.bank.gui.branch.cards.*;
+import cs5414.bank.gui.servers.*;
 import cs5414.bank.message.BankReplyMessage;
 import cs5414.bank.message.BaseMessage;
 import cs5414.bank.message.SubSnapshotDeliveryMessage;
-import cs5414.bank.network.BaseServer;
 import cs5414.bank.network.NetworkInfo;
 
-public class BranchGUI implements ActionListener {
-	private JFrame frame;
-	static public JPanel panel;
+public class BranchGUI extends GUIBase implements ActionListener {
 	static public ResultsCard resultsCard;
 	static public DisplaySnapshotCard displaySnapshotCard;
 	static private MenuCard menuCard;
-	static public String name;
 	static public String branch_name;
-	static public NetworkInfo net;
-	static public String[] jvmID;
     
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		name = args[0];
+		final String gui_name = args[0];
 		branch_name = args[1];
-		String nameFile = args[2];
-		String topoFile = args[3];
-		net = new NetworkInfo(name, nameFile, topoFile);
+		final String nameFile = args[2];
+		final String topoFile = args[3];
 		System.err.println("BranchGUI " + name + " started");
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					BranchGUI window = new BranchGUI(name, branch_name);
+					BranchGUI window = new BranchGUI(gui_name, nameFile, topoFile, branch_name);
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -50,22 +45,14 @@ public class BranchGUI implements ActionListener {
 	/**
 	 * Create the application.
 	 */
-	public BranchGUI(String my_name, String my_branch_name) {
+	public BranchGUI(String my_name, String name_file, String topo_file, String my_branch_name) {
+		super(my_name, name_file, topo_file);
 		name = my_name;
 		branch_name = my_branch_name;
 		jvmID = ManagementFactory.getRuntimeMXBean().getName().split("@");
-		ReplyReceiverServer serv = new ReplyReceiverServer(my_name, net);
+		BranchGUIListener serv = new BranchGUIListener(my_name, net);
 		serv.start();
 		initialize();
-	}
-
-	public long getUID() {
-		java.util.Date today = new java.util.Date();
-		java.sql.Timestamp ts1 = new java.sql.Timestamp(today.getTime());
-		String tsTime1 = String.valueOf(ts1.getTime());
-		
-		String UID = jvmID[0] + tsTime1;
-		return Long.valueOf(UID);
 	}
 	
 	/**
@@ -134,18 +121,13 @@ public class BranchGUI implements ActionListener {
 		} 
 	}
 	
-	private class ReplyReceiverServer extends BaseServer {
+	private class BranchGUIListener extends ReplyReceiverServer {
 		
-		private int counter;
-		
-		public ReplyReceiverServer(String name, NetworkInfo net) {
+		public BranchGUIListener(String name, NetworkInfo net) {
 			super(name, net);
-			counter = 0;
 		}
-		
+
 		protected void processMessage(BaseMessage message) {
-			System.err.println("Message received #" + counter + ": " + message);
-			++counter;
 			
 			if(message instanceof BankReplyMessage) {
 				BankReplyMessage msg = (BankReplyMessage) message;
@@ -165,9 +147,7 @@ public class BranchGUI implements ActionListener {
 				CardLayout cl = (CardLayout) (BranchGUI.panel.getLayout());
 				cl.show(BranchGUI.panel, Constants.SHOW_SNAPSHOT_PANEL);
 			}
-
 		}
-		
 	}
 	
 }
