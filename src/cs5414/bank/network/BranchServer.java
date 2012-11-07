@@ -7,10 +7,6 @@ import cs5414.bank.message.BankRequestMessage;
 import cs5414.bank.message.BankRequestMessage.RequestType;
 import cs5414.bank.message.BaseMessage;
 import cs5414.bank.message.FailureDetectorMessage;
-import cs5414.bank.message.RequestSnapshotMessage;
-import cs5414.bank.message.SubSnapshotDeliveryMessage;
-import cs5414.bank.message.TakeSnapshotMessage;
-import cs5414.bank.misc.LocalSubSnapshot;
 import cs5414.bank.misc.VectorClock;
 
 public class BranchServer extends BaseServer {
@@ -19,7 +15,6 @@ public class BranchServer extends BaseServer {
 	private String branchPrefix;
 	private HashMap<String, Integer> balances;
 	private VectorClock maxUsedSerials;
-	private HashMap<String, LocalSubSnapshot> snapshotsInProgress;
 	private FailureDetector oracle;
 	
 	public BranchServer(String name, NetworkInfo net) {
@@ -28,70 +23,13 @@ public class BranchServer extends BaseServer {
 		branchPrefix = name.substring(0, 2);
 		balances = new HashMap<String, Integer>();
 		maxUsedSerials = new VectorClock();
-		snapshotsInProgress = new HashMap<String, LocalSubSnapshot>();
 		oracle = new FailureDetector();
 	}
 	
 	protected void processMessage(BaseMessage message) {
 		String accountPrefix, accountSuffix;
 		int prevBalance, newBalance;
-		if (message instanceof RequestSnapshotMessage) {
-			TakeSnapshotMessage take = new TakeSnapshotMessage();
-			take.source = servName;
-			take.destination = servName;
-			take.uid = "" + Math.random(); //needs improvement
-			enqueueMessage(take);
-		} else if (message instanceof TakeSnapshotMessage) {
-			System.err.println("Processing \"take snapshot\":");
-			System.err.println(message);
-			LocalSubSnapshot snapshot;
-			TakeSnapshotMessage snapshotMessage =
-					(TakeSnapshotMessage) message;
-			if (snapshotsInProgress.containsKey(snapshotMessage.uid)) {
-				snapshot = snapshotsInProgress.get(snapshotMessage.uid);
-				boolean snapshotFinished = snapshot.processMessage(message);
-				if (snapshotFinished) {
-					snapshotsInProgress.remove(snapshotMessage.uid);
-					System.err.println("Finished snapshot:");
-					System.err.println(snapshot);
-					SubSnapshotDeliveryMessage delivery =
-							new SubSnapshotDeliveryMessage();
-					delivery.source = servName;
-					delivery.destination = branchPrefix + "_gui";
-					delivery.snapshot = snapshot;
-					senderClient.sendMessage(delivery);
-				} else {
-					//nothing?
-				}
-				
-			} else {
-				snapshot = new LocalSubSnapshot(snapshotMessage.uid,
-						servName, balances, network);
-				snapshotsInProgress.put(snapshotMessage.uid, snapshot);
-				for (String dest: network.getOutboundLinks(servName)) {
-					if (dest.contains("_server")) {
-						TakeSnapshotMessage propagateSnapshot =
-								new TakeSnapshotMessage();
-						propagateSnapshot.source = servName;
-						propagateSnapshot.destination = dest;
-						propagateSnapshot.uid = snapshotMessage.uid;
-						senderClient.sendMessage(propagateSnapshot);
-					}
-				}
-				boolean snapshotFinished = snapshot.processMessage(message);
-				if (snapshotFinished) {
-					snapshotsInProgress.remove(snapshotMessage.uid);
-					System.err.println("Finished snapshot:");
-					System.err.println(snapshot);
-					SubSnapshotDeliveryMessage delivery =
-							new SubSnapshotDeliveryMessage();
-					delivery.source = servName;
-					delivery.destination = branchPrefix + "_gui";
-					delivery.snapshot = snapshot;
-					senderClient.sendMessage(delivery);
-				}
-			}
-		} else if (message instanceof BankRequestMessage) {
+		if (message instanceof BankRequestMessage) {
 			System.err.println("Processing bank request:");
 			System.err.println(message);
 			BankRequestMessage requestMessage =
