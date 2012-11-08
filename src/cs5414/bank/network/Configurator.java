@@ -2,35 +2,35 @@ package cs5414.bank.network;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import cs5414.bank.network.Config;
 
 public class Configurator {
 	
-	private ArrayList<String> config;
+	private Config config;
 	
 	public Configurator() {
-		config = new ArrayList<String>();
+		config = new Config();
 	}
 	
-	public ArrayList<String> getConfig() {
+	public Config getConfig() {
 		return config;
 	}
 	
-	public String getHead() {
-		return config.get(0);
+	public boolean leads_group(String node, String group) {
+		int index = config.get_group_nodes(group).indexOf(node);
+		return(0 == index);
 	}
 	
-	public boolean add(String node) {
-		config.add(node);
-		return config.contains(node);
+	public void add(String node) {
+		config.add_node(node);
 	}
 	
-	public boolean remove(String node) {
-		config.remove(node);
-		return !config.contains(node);
+	public void remove(String node) {
+		config.rm_node(node);
 	}
 	
-	public void clear(String group) {
-		config.clear();
-	}
 
 }
