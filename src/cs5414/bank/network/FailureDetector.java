@@ -11,6 +11,10 @@ public class FailureDetector {
 		config = new Configurator(replica_branch);
 	}
 	
+	public Configurator getConfigurator() {
+		return config;
+	}
+	
 	public void handleTransition(FailureDetectorMessage message) {
 		if (message.requestType == FailureDetectorMessage.RequestType.FAILED) {
 			config.remove(message.node);

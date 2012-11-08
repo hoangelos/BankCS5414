@@ -55,9 +55,19 @@ public class Configurator {
 		return config;
 	}
 	
-	public boolean leads_group(String node, String group) {
+	public boolean i_am_head(String node, String group) {
 		int index = config.get_group_nodes(group).indexOf(node);
 		return(0 == index);
+	}
+	
+	public boolean i_am_tail(String node, String group) {
+		int index = config.get_group_nodes(group).indexOf(node);
+		return(config.get_group_nodes(group).size()-1 == index);
+	}
+	
+	public String my_successor(String node, String group) {
+		int index = config.get_group_nodes(group).indexOf(node);
+		return config.get_group_nodes(group).get(index+1);
 	}
 	
 	public void add(String node) {
