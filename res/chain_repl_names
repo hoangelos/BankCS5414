@@ -1,0 +1,7 @@
+fail_gui	localhost	10000
+aa_gui	localhost	10001
+bb_gui	localhost	10002
+cc_gui	localhost	10003
+aa_branch	localhost	10101
+bb_branch	localhost	10102
+cc_branch	localhost	10103
