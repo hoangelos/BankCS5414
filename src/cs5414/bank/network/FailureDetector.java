@@ -7,8 +7,12 @@ public class FailureDetector {
 	
 	private Configurator config;
 	
-	public FailureDetector() {
-		config = new Configurator();
+	public FailureDetector(String replica_branch) {
+		config = new Configurator(replica_branch);
+	}
+	
+	public Configurator getConfigurator() {
+		return config;
 	}
 	
 	public void handleTransition(FailureDetectorMessage message) {

@@ -18,10 +18,10 @@ public class BranchServer extends BaseServer {
 	private boolean serverRunning;
 	private HashMap<String, BranchBalances> branchBalances;
 	
-	public BranchServer(String name, NetworkInfo net) {
+	public BranchServer(String name, NetworkInfo net, String replica_branch) {
 		super(name, net);
 		senderClient = new MessageSenderClient(name, net);
-		oracle = new FailureDetector();
+		oracle = new FailureDetector(replica_branch);
 		serverRunning = true;
 		branchBalances = new HashMap<String, BranchBalances>();
 	}
@@ -116,8 +116,9 @@ public class BranchServer extends BaseServer {
 		String myName = args[0];
 		String namesFile = args[1];
 		String topoFile = args[2];
+		String replica_branch = args[3];
 		NetworkInfo net = new NetworkInfo(myName, namesFile, topoFile);
-		BranchServer branch = new BranchServer(myName, net);
+		BranchServer branch = new BranchServer(myName, net, replica_branch);
 		branch.start();
 	}
 	
