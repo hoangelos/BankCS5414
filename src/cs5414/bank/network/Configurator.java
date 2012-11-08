@@ -1,18 +1,54 @@
 package cs5414.bank.network;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
+
 import cs5414.bank.network.Config;
 
 public class Configurator {
 	
 	private Config config;
 	
-	public Configurator() {
-		config = new Config();
+	public Configurator(String namesFile) {
+		HashMap<String, ArrayList<String>> defaultGroups = new HashMap<String, ArrayList<String>>();
+		HashMap<String, ArrayList<String>> defaultNodes = new HashMap<String, ArrayList<String>>();
+		try {
+			BufferedReader namesReader = new BufferedReader(new FileReader(namesFile));
+			while (namesReader.ready()) {
+				String line = namesReader.readLine();
+				String[] split = line.split("\\t");
+				String group = split[0];
+				String[] nodes = split[1].split(",");
+				ArrayList<String> nodeList = (ArrayList<String>) Arrays.asList(nodes);
+				
+				if(defaultNodes.containsKey(group)) {
+					defaultNodes.get(group).addAll(nodeList);
+				} else {
+					defaultNodes.put(group, nodeList);
+				}
+				
+				Iterator<String> iterator = nodeList.iterator();
+				while(iterator.hasNext()) {
+					String node = iterator.next();
+					
+					if(defaultGroups.containsKey(node)) {
+						defaultGroups.get(node).add(group);
+					} else {
+						defaultGroups.put(node, new ArrayList<String>());
+						defaultGroups.get(node).add(group);
+					}
+				}
+			}
+			namesReader.close();
+		} catch(Exception e) {
+			e.printStackTrace(System.err);
+		}
+		config = new Config(defaultGroups, defaultNodes);
 	}
 	
 	public Config getConfig() {

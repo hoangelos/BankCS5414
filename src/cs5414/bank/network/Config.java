@@ -12,11 +12,11 @@ public class Config {
 	protected HashMap<String, ArrayList<String>> currentGroups;
 	protected HashMap<String, ArrayList<String>> currentNodes;
 	
-	public Config() {
-		defaultGroups = new HashMap<String, ArrayList<String>>();
-		defaultNodes = new HashMap<String, ArrayList<String>>();
-		currentGroups = new HashMap<String, ArrayList<String>>();
-		currentNodes = new HashMap<String, ArrayList<String>>();
+	public Config(HashMap<String, ArrayList<String>> groups, HashMap<String, ArrayList<String>> nodes) {
+		defaultGroups = new HashMap<String, ArrayList<String>>(groups);
+		defaultNodes = new HashMap<String, ArrayList<String>>(nodes);
+		currentGroups = new HashMap<String, ArrayList<String>>(groups);
+		currentNodes = new HashMap<String, ArrayList<String>>(nodes);
 	}
 	
 	public ArrayList<String> get_node_groups(String node) {
