@@ -16,15 +16,14 @@ public class BranchServer extends BaseServer {
 	
 	private MessageSenderClient senderClient;
 	private FailureDetector oracle;
-	private boolean serverRunning;
 	private HashMap<String, BranchBalances> branchBalances;
 	
 	public BranchServer(String name, NetworkInfo net, String replica_branch) {
 		super(name, net);
 		senderClient = new MessageSenderClient(name, net);
 		oracle = new FailureDetector(replica_branch);
-		serverRunning = true;
 		branchBalances = new HashMap<String, BranchBalances>();
+		initBranchStates();
 	}
 	
 	private void initBranchStates() {
@@ -73,7 +72,11 @@ public class BranchServer extends BaseServer {
 		passMessage.accountInto = message.accountInto;
 		passMessage.amount = message.amount;
 		passMessage.msgNumForReplies = message.msgNumForReplies;
-		passMessage.originator = message.originator;
+		if (message.originator == null) {
+			passMessage.originator = message.source;
+		} else {
+			passMessage.originator = message.originator;
+		}
 		passMessage.serial = message.serial;
 		senderClient.sendMessage(passMessage);
 	}
@@ -88,24 +91,52 @@ public class BranchServer extends BaseServer {
 		senderClient.sendMessage(reply);
 	}
 	
+	private int handleBankRequestLocally(BankRequestMessage message) {
+		String requestedBranch = message.account.substring(0, 2);
+		BranchBalances requestedBranchBalances = branchBalances.get(requestedBranch);
+		switch (message.requestType) {
+		case QUERY:
+			return requestedBranchBalances.query(
+					message.account.substring(3),
+					message.serial);
+		case DEPOSIT:
+			return requestedBranchBalances.deposit(
+					message.account.substring(3),
+					message.amount,
+					message.serial);
+		case TRANSFER:
+		case WITHDRAW:
+			return requestedBranchBalances.withdraw(
+					message.account.substring(3),
+					message.amount,
+					message.serial);
+		default:
+			return 0;
+		}
+	}
+	
 	protected void processMessage(BaseMessage message) {
 		if (message instanceof BankRequestMessage) {
 			
-			if (!serverRunning) {
-				System.err.println("Ignored a message while server not running:");
-				System.err.println(message);
+			BankRequestMessage brMessage = (BankRequestMessage) message;
+			String requestedBranch = brMessage.account.substring(0, 2);
+			
+			if (!isMemberForBranch(requestedBranch)) {
 				return;
 			}
 			
-			BankRequestMessage brMessage = (BankRequestMessage) message;
-			if (true /* what are all conditions? */) {
-				
-				
-				
-			} else {
-				
-				
-				
+			if (!messageIsExternal(brMessage)) {
+				int resultBalance = handleBankRequestLocally(brMessage);
+				if (isTailForBranch(requestedBranch)) {
+					sendReplyToOriginator(brMessage, resultBalance);
+				}
+			} else if (brMessage.requestType == RequestType.QUERY
+					&& isTailForBranch(requestedBranch)) {
+				int resultBalance = handleBankRequestLocally(brMessage);
+				sendReplyToOriginator(brMessage, resultBalance);
+			} else if (isHeadForBranch(requestedBranch)) {
+				handleBankRequestLocally(brMessage);
+				passMessageToSuccessor(brMessage);
 			}
 			
 		} else if (message instanceof FailureDetectorMessage) {
