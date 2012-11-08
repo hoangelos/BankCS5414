@@ -1,5 +1,6 @@
 package cs5414.bank.network;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import cs5414.bank.message.BankReplyMessage;
@@ -27,7 +28,11 @@ public class BranchServer extends BaseServer {
 	}
 	
 	private void initBranchStates() {
-		
+		clearBranchStates();
+		ArrayList<String> branchNames = oracle.getConfigurator().getConfig().get_node_groups(servName);
+		for (String branchName: branchNames) {
+			branchBalances.put(branchName, new BranchBalances());
+		}
 	}
 	
 	private void clearBranchStates() {
@@ -39,19 +44,19 @@ public class BranchServer extends BaseServer {
 	}
 	
 	private boolean isMemberForBranch(String prefix) {
-		return true;
+		return oracle.getConfigurator().getConfig().get_group_nodes(prefix).contains(prefix);
 	}
 	
 	private boolean isHeadForBranch(String prefix) {
-		return true;
+		return oracle.getConfigurator().i_am_head(servName, prefix);
 	}
 	
 	private boolean isTailForBranch(String prefix) {
-		return true;
+		return oracle.getConfigurator().i_am_tail(servName, prefix);
 	}
 	
 	private String getSuccessorForBranch(String prefix) {
-		return "FIX ME";
+		return oracle.getConfigurator().my_successor(servName, prefix);
 	}
 	
 	private boolean messageIsExternal(BankRequestMessage message) {
@@ -59,14 +64,18 @@ public class BranchServer extends BaseServer {
 	}
 	
 	private void passMessageToSuccessor(BankRequestMessage message) {
-		String successorName = "TO DO FIX ME";
+		String branchName = message.destination.substring(0, 2);
+		String successorName = getSuccessorForBranch(branchName);
 		BankRequestMessage passMessage = new BankRequestMessage();
 		passMessage.source = servName;
 		passMessage.destination = successorName;
 		passMessage.account = message.account;
 		passMessage.accountInto = message.accountInto;
 		passMessage.amount = message.amount;
-		
+		passMessage.msgNumForReplies = message.msgNumForReplies;
+		passMessage.originator = message.originator;
+		passMessage.serial = message.serial;
+		senderClient.sendMessage(passMessage);
 	}
 	
 	private void sendReplyToOriginator(BankRequestMessage message, int resultBalance) {
@@ -89,7 +98,7 @@ public class BranchServer extends BaseServer {
 			}
 			
 			BankRequestMessage brMessage = (BankRequestMessage) message;
-			if (messageIsExternal(brMessage)) {
+			if (true /* what are all conditions? */) {
 				
 				
 				
@@ -107,7 +116,10 @@ public class BranchServer extends BaseServer {
 			
 		} else if (message instanceof RecoveryStateMessage) {
 			
+			RecoveryStateMessage rsMessage = (RecoveryStateMessage) message;
+			setBranchState(rsMessage.branchName, rsMessage.branchBalances);
 			
+			// trigger local handlers if applicable
 			
 		}
 	}
