@@ -50,14 +50,41 @@ public class BranchServer extends BaseServer {
 		return true;
 	}
 	
+	private String getSuccessorForBranch(String prefix) {
+		return "FIX ME";
+	}
+	
 	private boolean messageIsExternal(BankRequestMessage message) {
-		return true;
+		return !(message.source.contains("server"));
+	}
+	
+	private void passMessageToSuccessor(BankRequestMessage message) {
+		String successorName = "TO DO FIX ME";
+		BankRequestMessage passMessage = new BankRequestMessage();
+		passMessage.source = servName;
+		passMessage.destination = successorName;
+		passMessage.account = message.account;
+		passMessage.accountInto = message.accountInto;
+		passMessage.amount = message.amount;
+		
+	}
+	
+	private void sendReplyToOriginator(BankRequestMessage message, int resultBalance) {
+		BankReplyMessage reply = new BankReplyMessage();
+		reply.source = servName;
+		reply.destination = message.originator;
+		reply.account = message.account;
+		reply.balance = resultBalance;
+		reply.inReplyToNum = message.msgNumForReplies;
+		senderClient.sendMessage(reply);
 	}
 	
 	protected void processMessage(BaseMessage message) {
 		if (message instanceof BankRequestMessage) {
 			
 			if (!serverRunning) {
+				System.err.println("Ignored a message while server not running:");
+				System.err.println(message);
 				return;
 			}
 			

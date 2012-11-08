@@ -19,6 +19,7 @@ public class BankRequestMessage extends BaseMessage {
 	
 	private static final long serialVersionUID = 1L;
 	
+	public String originator;
 	public RequestType requestType;
 	public long serial;
 	public String account;
@@ -26,10 +27,10 @@ public class BankRequestMessage extends BaseMessage {
 	public int amount;
 	
 	public String toString() {
-		return super.toString() + " -> BankRequestMessage [requestType "
-				+ requestType.name() + " serial " + serial + " account "
-				+ account + " accountInto " + accountInto + " amount "
-				+ amount + "]";
+		return super.toString() + " -> BankRequestMessage [originator "
+				+ originator + "requestType " + requestType.name()
+				+ " serial " + serial + " account " + account
+				+ " accountInto " + accountInto + " amount " + amount + "]";
 	}
 	
 }
