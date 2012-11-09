@@ -21,13 +21,13 @@ public class Config {
 	
 	public ArrayList<String> get_node_groups(String node) {
 		//Grab the list of groups that the node is a part of.
-		ArrayList<String> groups = currentNodes.get(node);
+		ArrayList<String> groups = currentGroups.get(node);
 		
 		return groups;
 	}
 	
 	public ArrayList<String> get_group_nodes(String group) {
-		ArrayList<String> nodes = currentGroups.get(group);
+		ArrayList<String> nodes = currentNodes.get(group);
 		return nodes;
 	}
 	
