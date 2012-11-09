@@ -1,3 +1,3 @@
-aa	aa_branch,bb_branch,cc_branch
-bb	bb_branch,cc_branch,aa_branch
-cc	cc_branch,aa_branch,bb_branch
+aa	aa_server,bb_server,cc_server
+bb	bb_server,cc_server,aa_server
+cc	cc_server,aa_server,bb_server

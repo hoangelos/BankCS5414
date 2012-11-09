@@ -24,7 +24,7 @@ public class Configurator {
 				String[] split = line.split("\\t");
 				String group = split[0];
 				String[] nodes = split[1].split(",");
-				ArrayList<String> nodeList = (ArrayList<String>) Arrays.asList(nodes);
+				ArrayList<String> nodeList = new ArrayList<String>(Arrays.asList(nodes));
 				
 				if(defaultNodes.containsKey(group)) {
 					defaultNodes.get(group).addAll(nodeList);
