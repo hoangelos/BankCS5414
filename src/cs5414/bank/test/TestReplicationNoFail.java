@@ -3,6 +3,7 @@ package cs5414.bank.test;
 import java.util.ArrayList;
 
 import cs5414.bank.message.BankRequestMessage;
+import cs5414.bank.message.BankRequestMessage.RequestType;
 import cs5414.bank.network.BaseServer;
 import cs5414.bank.network.MessageSenderClient;
 import cs5414.bank.network.NetworkInfo;
@@ -23,6 +24,7 @@ public class TestReplicationNoFail extends BaseServer {
 		replicas.add("bb_server");
 		replicas.add("cc_server");
 		BankRequestMessage deposit = new BankRequestMessage();
+		deposit.requestType = RequestType.DEPOSIT;
 		deposit.source = "test_sender";
 		deposit.account = "aa.test";
 		deposit.amount = 100;

@@ -28,7 +28,7 @@ public class BranchServer extends BaseServer {
 	
 	private void initBranchStates() {
 		clearBranchStates();
-		ArrayList<String> branchNames = oracle.getConfigurator().getConfig().get_group_nodes(servName.substring(0, 2));
+		ArrayList<String> branchNames = oracle.getConfigurator().getConfig().get_node_groups(servName);
 		for (String branchName: branchNames) {
 			branchBalances.put(branchName, new BranchBalances());
 		}
@@ -68,6 +68,7 @@ public class BranchServer extends BaseServer {
 		BankRequestMessage passMessage = new BankRequestMessage();
 		passMessage.source = servName;
 		passMessage.destination = successorName;
+		passMessage.requestType = message.requestType;
 		passMessage.account = message.account;
 		passMessage.accountInto = message.accountInto;
 		passMessage.amount = message.amount;
@@ -122,19 +123,29 @@ public class BranchServer extends BaseServer {
 			String requestedBranch = brMessage.account.substring(0, 2);
 			
 			if (!isMemberForBranch(requestedBranch)) {
+				System.err.println("Ignoring message for branch I do not represent:");
+				System.err.println(message);
 				return;
 			}
 			
 			if (!messageIsExternal(brMessage)) {
+				System.err.println("Handling internal request:");
+				System.err.println(brMessage);
 				int resultBalance = handleBankRequestLocally(brMessage);
 				if (isTailForBranch(requestedBranch)) {
 					sendReplyToOriginator(brMessage, resultBalance);
+				} else {
+					passMessageToSuccessor(brMessage);
 				}
 			} else if (brMessage.requestType == RequestType.QUERY
 					&& isTailForBranch(requestedBranch)) {
+				System.err.println("Tail handling query:");
+				System.err.println(brMessage);
 				int resultBalance = handleBankRequestLocally(brMessage);
 				sendReplyToOriginator(brMessage, resultBalance);
 			} else if (isHeadForBranch(requestedBranch)) {
+				System.err.println("Head handling external request:");
+				System.err.println(brMessage);
 				handleBankRequestLocally(brMessage);
 				passMessageToSuccessor(brMessage);
 			}
