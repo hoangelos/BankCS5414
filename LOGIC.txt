@@ -1,10 +1,14 @@
 We implemented chain replication with simplifications to account for the idealized elements of our model.
-Our implementation is based on the descriptions from lecture and from http://www.cs.cornell.edu/fbs/publications/ChainReplicOSDI.pdf .
+Our implementation is based on the descriptions from lecture and from the chain replication paper.
+http://www.cs.cornell.edu/fbs/publications/ChainReplicOSDI.pdf
 
 We have a number of potentially unreliable nodes. Each node potentially hosts some number of branches. Each node can be up or down at any given time.
 Each branch is associated with an ordered list of nodes, whose members are the set of all nodes that could ever host that branch, and whose order is the initial ordering among those nodes.
 The system is initially brought up with all the nodes up. Each branch is represented by the chain of nodes in the initial order described above.
+The system may receive a series of requests from clients. They system may experience a series of node downs and ups. We assume each branch has at least one node up at all times.
 
-A given node which is up at a given time knows the configuration of all groups it participates in. That is, it knows the membership and ordering of the chains associated 
+(As of the time of this writing, we're concurrently working on the failure and recovery components. This description is our goal. See other files for current status.)
 
-Any message which modifies the state should be processed by the head of the list. Any message which purely queries should be processed by the tail. We have the client broadcast any message for a branch to all nodes which could ever host that branch. All nodes except the one which is the correct handler for the message type, as currently determined by the configuration, discard client-originated messages.
+A given node which is up at a given time knows the configuration of all groups it participates in. That is, it knows the membership and ordering of the chains associated with these groups. It knows these initially from the specification above. When the failure detector informs it a node went down, it removes that node from any branches in its configuration. When the failure detector informs it a node went up, it adds that node to the tail of any branches in its configuration which should contain it.
+
+Any message which modifies the state should be processed by the head of the list. Any message which purely queries should be processed by the tail. So that the client does not need to know the configuration state, we have the client broadcast any message for a branch to all nodes which could ever host that branch. All nodes except the one which is the correct handler for the message type, as currently determined by the configuration and the previous rules, discard client-originated messages of such types. While it is not yet there, the message is passed down the chain. The end of the chain replies to the originator of the message.

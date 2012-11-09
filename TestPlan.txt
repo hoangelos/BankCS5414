@@ -1,29 +1,19 @@
-This is the topology we used for many of our tests. It is called "three_one_topo" in our tests.
-Its servers have the following network topology layout.
+For our tests, we used the following topology:
 
-                            +------+
-                            |      |<------------+
-              +-------------|  C   |+-----------+|
-              |             +------+            ||
-              |                ^                ||               +------+
-              |                |                ||               |      |
-              |                |                ||               |  E   |
-              v                +                v+               |      |
-           +-----+          +------+         +-------+           +------+
-           |     |          |      |         |       |              special node E, not a server!
-           | A   |+-------->|  B   |<-------+|  D    |              just a debug request source
-           +-----+          +------+         +-------+              connected to all servers
+There are three nodes called aa, bb, cc
+There are three branches called aa, bb, cc
+All nodes host all branches
+The order for aa is initially aa -> bb -> cc
+... bb ... bb -> cc -> aa
+... cc ... cc -> aa -> bb
+Additionally, there is a node for the failure detection announcer
+Additionally, there is an extra node for testing purposes
 
-Each server has a corresponding GUI attached in a direct bi-directional link.
-There is also a special node E which can talk to to all servers. It is ONLY FOR DEBUG/TESTING. Some unit tests take advantage of masquerading as E.
-Note that E is NOT A SERVER and does not participate in snapshots or other server operations. It is not a branch and does not deal with accounts.
-From the perspective of a snapshot, E ESSENTIALLY DOES NOT EXIST, because a snapshot only considers nodes named ending in "_server".
+This topology is specified by the following files under the res/ directory:
+chain_repl_names - specify physical node name/host/port
+chain_repl_topo - specify node physical topo
+chain_repl_branches - specify logical branch replication across physical nodes
 
-We tested our system from the GUI.
+We run the following tests:
 
-We wrote the following test clients and unit tests. See HowToRunTests.txt for more details.
-
-- test of interleaving between multiple snapshots
-- test of snapshot on topology with 4 nodes
-- test of transactions on single branch
-- test of network layer ping/pong
+test chain replication w/o failures

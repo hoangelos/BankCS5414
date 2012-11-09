@@ -1,9 +1,1 @@
-We are mainly interested in topologies where the servers form a single strongly connected component. That is, for any pair of servers A and B, there is a directed path from A to B. Additionally, we require a direct, bi-directional connection between any given GUI and its corresponding server.
-
-Note that we could have relaxed the above, but that the results would not necessarily be meaningful or useful.
-
-If a server has only outbound links with other servers, i.e. it is upstream w.r.t. the main connected component, then it can never participate in snapshots initiated within the main component, because there is no link through which it could have learned such a snapshot was initiated. However, it can initiate a snapshot correctly, because it can contact its out-neighbors and inform them correctly, and it has no inbound links and so it is immediately able to finish the local procedure for it.
-
-If a server only has inbound links with other servers, i.e. it is downstream w.r.t. the main connected component, then it can not initiate a snapshot correctly, because there is no link through which it could have informed any server in the main connected component. However, it can participate in snapshots correctly, because it can wait for all its inbound links.
-
-If a server has neither inbound nor outbound links with other servers, then it essentially does not exist from the perspective of the system at large. Alternatively, it and its GUI if one exists form essentially a totally separate system which our system does not care about.
+n/a
