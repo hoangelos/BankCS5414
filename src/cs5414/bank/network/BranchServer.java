@@ -28,7 +28,7 @@ public class BranchServer extends BaseServer {
 	
 	private void initBranchStates() {
 		clearBranchStates();
-		ArrayList<String> branchNames = oracle.getConfigurator().getConfig().get_node_groups(servName);
+		ArrayList<String> branchNames = oracle.getConfigurator().getConfig().get_node_groups(servName.substring(0, 2));
 		for (String branchName: branchNames) {
 			branchBalances.put(branchName, new BranchBalances());
 		}
@@ -43,7 +43,7 @@ public class BranchServer extends BaseServer {
 	}
 	
 	private boolean isMemberForBranch(String prefix) {
-		return oracle.getConfigurator().getConfig().get_group_nodes(prefix).contains(prefix);
+		return oracle.getConfigurator().getConfig().get_group_nodes(prefix).contains(servName);
 	}
 	
 	private boolean isHeadForBranch(String prefix) {

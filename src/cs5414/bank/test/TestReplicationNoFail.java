@@ -34,4 +34,10 @@ public class TestReplicationNoFail extends BaseServer {
 		}
 	}
 	
+	public static void main(String[] args) {
+		NetworkInfo net = new NetworkInfo("test_sender", "res/chain_repl_names", "res/chain_repl_topo");
+		TestReplicationNoFail test = new TestReplicationNoFail(net);
+		test.start();
+	}
+	
 }
