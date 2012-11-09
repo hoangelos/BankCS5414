@@ -43,7 +43,7 @@ public class BranchServer extends BaseServer {
 	}
 	
 	private boolean isMemberForBranch(String prefix) {
-		return oracle.getConfigurator().getConfig().get_group_nodes(prefix).contains(servName);
+		return oracle.getConfigurator().getConfig().get_node_groups(prefix).contains(servName);
 	}
 	
 	private boolean isHeadForBranch(String prefix) {
